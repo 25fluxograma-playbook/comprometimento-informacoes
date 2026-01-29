@@ -24,7 +24,7 @@
             font-family: 'Roboto', sans-serif;
             margin: 0;
             background-color: var(--dark-blue);
-            color: white;
+            color: rgb(255, 255, 255);
             display: flex;
             flex-direction: column;
             height: 100vh;
@@ -59,7 +59,7 @@
             display: block;
             margin: 20px auto;
             padding: 15px 40px;
-            background-color: #222;
+            background-color: #000062;
             color: white;
             border: none;
             border-radius: 5px;
@@ -85,7 +85,7 @@
         
         .c-deteccao { background-color: var(--nist-detect); color: white; }
         .c-analise { background-color: var(--nist-analyze); color: white; }
-        .c-contencao { background-color: var(--nist-contain); color: black; }
+        .c-contencao { background-color: var(--nist-contain); color: rgb(255, 255, 255); }
         .c-erradicacao { background-color: var(--nist-eradicate); color: white; }
         .c-recuperacao { background-color: var(--nist-recover); color: white; }
         .c-pos { background-color: var(--nist-post); color: white; }
@@ -108,7 +108,7 @@
     <div class="viewport">
         <div class="header-title">
             <h1>COMPROMETIMENTO DE INFORMAÇÃO</h1>
-            <p>Padrão NIST SP 800-61r3 | UFRGS</p>
+            <p> Baseado em NIST SP 800-61 Rev. 3 </p>
         </div>
 
         <div id="principal" class="content-card active">
@@ -118,7 +118,7 @@
         </div>
 
         <div id="fase_det" class="content-card">
-            <h2 style="color: var(--nist-detect)">FASE 2.1: DETECÇÃO (IDENTIFICAÇÃO)</h2>
+            <h2 style="color: var(--nist-detect)">DETECÇÃO (IDENTIFICAÇÃO)</h2>
             <div class="img-container"><img src="deteccao.jpg" alt="Detecção"></div>
             <button class="btn-details" onclick="toggleDetails('det_text')">INSTRUÇÕES DE OPERAÇÃO ↓</button>
             <div id="det_text" class="extra-info">
@@ -136,7 +136,7 @@
         </div>
 
         <div id="fase_ana" class="content-card">
-            <h2 style="color: var(--nist-analyze)">FASE 2.2: ANÁLISE (TRIAGEM)</h2>
+            <h2 style="color: var(--nist-analyze)">ANÁLISE (TRIAGEM)</h2>
             <div class="img-container"><img src="analise.jpg" alt="Análise"></div>
             <button class="btn-details" onclick="toggleDetails('ana_text')">INSTRUÇÕES DE ANÁLISE ↓</button>
             <div id="ana_text" class="extra-info">
@@ -154,7 +154,7 @@
         </div>
 
         <div id="fase3" class="content-card">
-            <h2 style="color: #fbc02d; background-color: #333; padding: 5px 15px; border-radius: 5px;">FASE 3: CONTENÇÃO</h2>
+            <h2 style="color: #eb0404; background-color: #ffffff; padding: 5px 15px; border-radius: 5px;"> CONTENÇÃO</h2>
             <div class="img-container"><img src="contencao.jpg" alt="Contenção"></div>
             <button class="btn-details" onclick="toggleDetails('det3')">INSTRUÇÕES DE CONTENÇÃO ↓</button>
             <div id="det3" class="extra-info">
@@ -162,7 +162,7 @@
                     <h3>Interrupção da Exfiltração</h3>
                     <p>O foco absoluto é impedir que mais dados saiam da rede da UFRGS.</p>
                     <dl class="steps-guide">
-                        <dt>Bloqueio de Canal de Saída <span class="badge bg-alto">PRIORIDADE 0</span></dt>
+                        <dt>Bloqueio de Canal de Saída <span class="badge bg-alto">PRIORIDADE </span></dt>
                         <dd>Aplicar regras de firewall para bloquear IPs de destino identificados na análise. Se necessário, isolar o host suspeito da rede externa mantendo a comunicação interna para investigação.</dd>
                         <dt>Revogação de Credenciais</dt>
                         <dd>Resetar senhas de contas comprometidas e revogar Tokens de API/Sessão ativos para impedir a persistência do acesso do atacante.</dd>
@@ -172,7 +172,7 @@
         </div>
 
         <div id="fase3b" class="content-card">
-            <h2 style="color: var(--nist-eradicate)">FASE 3.1: ERRADICAÇÃO (REMEDIAÇÃO)</h2>
+            <h2 style="color: var(--nist-eradicate)">ERRADICAÇÃO (REMEDIAÇÃO)</h2>
             <div class="img-container"><img src="erradicacao.jpg" alt="Erradicação"></div>
             <button class="btn-details" onclick="toggleDetails('det3b')">INSTRUÇÕES DE ERRADICAÇÃO ↓</button>
             <div id="det3b" class="extra-info">
@@ -190,7 +190,7 @@
         </div>
 
         <div id="fase4" class="content-card">
-            <h2 style="color: var(--nist-recover)">FASE 4: RECUPERAÇÃO (RETORNO)</h2>
+            <h2 style="color: var(--nist-recover)">RECUPERAÇÃO (RETORNO)</h2>
             <div class="img-container"><img src="recuperacao.jpg" alt="Recuperação"></div>
             <button class="btn-details" onclick="toggleDetails('det4')">INSTRUÇÕES DE RECUPERAÇÃO ↓</button>
             <div id="det4" class="extra-info">
@@ -208,7 +208,7 @@
         </div>
 
         <div id="fase5" class="content-card">
-            <h2 style="color: var(--nist-post)">FASE 5: PÓS-INCIDENTE (LIÇÕES)</h2>
+            <h2 style="color: var(--nist-post)">PÓS-INCIDENTE (LIÇÕES)</h2>
             <div class="img-container"><img src="posincidente.jpg" alt="Pós-Incidente"></div>
             <button class="btn-details" onclick="toggleDetails('det5')">INSTRUÇÕES DE FECHAMENTO ↓</button>
             <div id="det5" class="extra-info">
