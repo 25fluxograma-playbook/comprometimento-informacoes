@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playbook de Resposta a Incidentes - NIST</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --dark-blue: #000066; 
+            --nist-detect: #FF8000;
+            --nist-analyze: #FF8000;
+            --nist-contain: #FF3333;
+            --nist-eradicate: #FF3333;
+            --nist-recover: #0055aa;
+            --nist-post: #0055aa;
+            --red-alert: #cc0000;
+            --orange-alert: #ff8c00;
+            --gray-panel: #00001f;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            background-color: var(--dark-blue);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .menu-btn { position: fixed; top: 25px; right: 25px; font-size: 28px; cursor: pointer; z-index: 1000; }
+        .side-menu { height: 100%; width: 0; position: fixed; z-index: 999; top: 0; right: 0; background-color: #00001f; overflow-x: hidden; transition: 0.4s; padding-top: 60px; }
+        .side-menu a { padding: 15px 30px; text-decoration: none; font-size: 18px; color: #ccc; display: block; }
+
+        .viewport { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 20px; overflow-y: auto; }
+        .header-title { text-align: center; margin-bottom: 20px; text-transform: uppercase; }
+
+        .content-card {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            width: 90%;
+            max-width: 1200px;
+            color: black;
+            display: none; 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.603);
+            margin-bottom: 50px;
+        }
+
+        .active { display: block; }
+
+        .img-container { width: 100%; text-align: center; margin-bottom: 20px; }
+        .img-container img { max-width: 100%; border: 1px solid #ddd; border-radius: 4px; }
+
+        .btn-details {
+            display: block;
+            margin: 20px auto;
+            padding: 15px 40px;
+            background-color: #222;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+
+        .extra-info { display: none; margin-top: 30px; border-top: 2px solid #eee; padding-top: 20px; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .info-section { margin-bottom: 25px; }
+        .info-section h3 { border-left: 5px solid var(--dark-blue); padding-left: 10px; margin-bottom: 12px; color: #333; font-weight: 700; }
+        .info-section p { line-height: 1.6; color: #555; }
+
+        .steps-guide { background: #f9f9f9; padding: 15px; border-radius: 5px; border: 1px solid #eee; }
+        .steps-guide dt { font-weight: 700; color: #222; margin-top: 15px; display: flex; align-items: center; }
+        .steps-guide dd { margin-bottom: 10px; margin-left: 0; font-size: 0.95em; line-height: 1.6; color: #444; padding-left: 20px; border-left: 2px solid #ddd; }
+
+        .nav-bar { background-color: var(--gray-panel); display: flex; padding: 10px; gap: 5px; justify-content: center; border-top: 2px solid #00001f; }
+        .nav-btn { flex: 1; max-width: 150px; padding: 12px 2px; border: 1px solid #333; font-weight: 700; cursor: pointer; text-align: center; font-size: 10px; transition: 0.3s; }
+        
+        .c-deteccao { background-color: var(--nist-detect); color: white; }
+        .c-analise { background-color: var(--nist-analyze); color: white; }
+        .c-contencao { background-color: var(--nist-contain); color: black; }
+        .c-erradicacao { background-color: var(--nist-eradicate); color: white; }
+        .c-recuperacao { background-color: var(--nist-recover); color: white; }
+        .c-pos { background-color: var(--nist-post); color: white; }
+
+        .badge { font-size: 0.75em; padding: 2px 8px; border-radius: 12px; color: white; margin-left: 10px; }
+        .bg-alto { background: var(--red-alert); }
+        .bg-medio { background: var(--orange-alert); }
+    </style>
+</head>
+<body>
+
+    <div class="menu-btn" onclick="toggleMenu()"><i class="fas fa-bars"></i></div>
+
+    <div id="sideMenu" class="side-menu">
+        <a href="#" onclick="showPhase('principal')"><i class="fas fa-home"></i> Início</a>
+        <hr style="border-color: #333; margin: 10px 20px;">
+        <a href="#" onclick="alert('Funcionalidade de PDF integrada ao sistema principal.')"><i class="fas fa-file-pdf"></i> Exportar Relatório</a>
+    </div>
+
+    <div class="viewport">
+        <div class="header-title">
+            <h1>COMPROMETIMENTO DE INFORMAÇÃO</h1>
+            <p>Padrão NIST SP 800-61r3 | UFRGS</p>
+        </div>
+
+        <div id="principal" class="content-card active">
+            <h2 style="text-align: center;">FLUXOGRAMA DE DECISÃO</h2>
+            <div class="img-container"><img src="geral.jpg" alt="Fluxograma Geral"></div>
+            <p style="text-align: center; color: #666;">Selecione uma das fases abaixo na barra de navegação para ver as instruções detalhadas.</p>
+        </div>
+
+        <div id="fase_det" class="content-card">
+            <h2 style="color: var(--nist-detect)">FASE 2.1: DETECÇÃO (IDENTIFICAÇÃO)</h2>
+            <div class="img-container"><img src="deteccao.jpg" alt="Detecção"></div>
+            <button class="btn-details" onclick="toggleDetails('det_text')">INSTRUÇÕES DE OPERAÇÃO ↓</button>
+            <div id="det_text" class="extra-info">
+                <div class="info-section">
+                    <h3>Protocolo de Identificação</h3>
+                    <p>O objetivo é confirmar a ocorrência e coletar os primeiros sinais de comprometimento (IoCs).</p>
+                    <dl class="steps-guide">
+                        <dt>Identificação da Origem do Alerta</dt>
+                        <dd>Verificar se o alerta partiu do SIEM (Exfiltração), EDR (Acesso anômalo) ou reporte direto de usuário. Validar se não se trata de um falso positivo.</dd>
+                        <dt>Coleta de Evidências Voláteis <span class="badge bg-alto">CRÍTICO</span></dt>
+                        <dd>Antes de qualquer alteração no sistema, capturar logs de tráfego de rede e hashes de arquivos suspeitos para garantir a integridade da prova.</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <div id="fase_ana" class="content-card">
+            <h2 style="color: var(--nist-analyze)">FASE 2.2: ANÁLISE (TRIAGEM)</h2>
+            <div class="img-container"><img src="analise.jpg" alt="Análise"></div>
+            <button class="btn-details" onclick="toggleDetails('ana_text')">INSTRUÇÕES DE ANÁLISE ↓</button>
+            <div id="ana_text" class="extra-info">
+                <div class="info-section">
+                    <h3>Avaliação de Escopo e Impacto</h3>
+                    <p>Determinar a extensão do dano e as obrigações legais imediatas.</p>
+                    <dl class="steps-guide">
+                        <dt>Triagem de Dados (Decisão LGPD) <span class="badge bg-alto">ALTO</span></dt>
+                        <dd>Classificar os dados comprometidos. Se houver Dados Pessoais ou Sensíveis, o DPO deve ser notificado imediatamente para cumprir o prazo legal de 48h junto à ANPD.</dd>
+                        <dt>Determinação do Vetor e Extensão</dt>
+                        <dd>Analisar como o atacante entrou (ex: Credencial roubada, SQL Injection) e quantos registros/arquivos foram acessados ou exportados.</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <div id="fase3" class="content-card">
+            <h2 style="color: #fbc02d; background-color: #333; padding: 5px 15px; border-radius: 5px;">FASE 3: CONTENÇÃO</h2>
+            <div class="img-container"><img src="contencao.jpg" alt="Contenção"></div>
+            <button class="btn-details" onclick="toggleDetails('det3')">INSTRUÇÕES DE CONTENÇÃO ↓</button>
+            <div id="det3" class="extra-info">
+                <div class="info-section">
+                    <h3>Interrupção da Exfiltração</h3>
+                    <p>O foco absoluto é impedir que mais dados saiam da rede da UFRGS.</p>
+                    <dl class="steps-guide">
+                        <dt>Bloqueio de Canal de Saída <span class="badge bg-alto">PRIORIDADE 0</span></dt>
+                        <dd>Aplicar regras de firewall para bloquear IPs de destino identificados na análise. Se necessário, isolar o host suspeito da rede externa mantendo a comunicação interna para investigação.</dd>
+                        <dt>Revogação de Credenciais</dt>
+                        <dd>Resetar senhas de contas comprometidas e revogar Tokens de API/Sessão ativos para impedir a persistência do acesso do atacante.</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <div id="fase3b" class="content-card">
+            <h2 style="color: var(--nist-eradicate)">FASE 3.1: ERRADICAÇÃO (REMEDIAÇÃO)</h2>
+            <div class="img-container"><img src="erradicacao.jpg" alt="Erradicação"></div>
+            <button class="btn-details" onclick="toggleDetails('det3b')">INSTRUÇÕES DE ERRADICAÇÃO ↓</button>
+            <div id="det3b" class="extra-info">
+                <div class="info-section">
+                    <h3>Eliminação do Agente Invasor</h3>
+                    <p>Garantir que o ambiente esteja "limpo" antes de retomar as operações.</p>
+                    <dl class="steps-guide">
+                        <dt>Remoção de Backdoors e Persistência</dt>
+                        <dd>Identificar e remover scripts maliciosos, tarefas agendadas ou contas de sistema criadas pelo atacante para garantir acesso futuro.</dd>
+                        <dt>Sanitização de Vulnerabilidades</dt>
+                        <dd>Aplicar patches de segurança ou desativar serviços vulneráveis que foram explorados (ex: fechar portas inseguras ou corrigir código vulnerável).</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <div id="fase4" class="content-card">
+            <h2 style="color: var(--nist-recover)">FASE 4: RECUPERAÇÃO (RETORNO)</h2>
+            <div class="img-container"><img src="recuperacao.jpg" alt="Recuperação"></div>
+            <button class="btn-details" onclick="toggleDetails('det4')">INSTRUÇÕES DE RECUPERAÇÃO ↓</button>
+            <div id="det4" class="extra-info">
+                <div class="info-section">
+                    <h3>Validação e Conformidade</h3>
+                    <p>Retomar o serviço com monitoramento reforçado e atender às leis.</p>
+                    <dl class="steps-guide">
+                        <dt>Verificação de Integridade de Dados</dt>
+                        <dd>Auditar as bases de dados para garantir que não houve alteração maliciosa (ex: inserção de registros falsos ou alteração de privilégios).</dd>
+                        <dt>Comunicação e Notificação Regulatória <span class="badge bg-alto">LEGAL</span></dt>
+                        <dd>Formalizar as notificações para a ANPD e para os titulares dos dados, caso a análise de impacto tenha indicado risco aos direitos dos cidadãos.</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <div id="fase5" class="content-card">
+            <h2 style="color: var(--nist-post)">FASE 5: PÓS-INCIDENTE (LIÇÕES)</h2>
+            <div class="img-container"><img src="posincidente.jpg" alt="Pós-Incidente"></div>
+            <button class="btn-details" onclick="toggleDetails('det5')">INSTRUÇÕES DE FECHAMENTO ↓</button>
+            <div id="det5" class="extra-info">
+                <div class="info-section">
+                    <h3>Ciclo de Melhoria Contínua</h3>
+                    <p>O incidente só termina quando o aprendizado é institucionalizado.</p>
+                    <dl class="steps-guide">
+                        <dt>Relatório de Lições Aprendidas</dt>
+                        <dd>Reunião com a equipe técnica e gerencial para identificar falhas no processo de resposta e pontos de melhoria na infraestrutura.</dd>
+                        <dt>Atualização de Controles e Treinamento</dt>
+                        <dd>Ajustar regras do SIEM/IPS e promover treinamentos de conscientização com base no vetor real que causou o incidente.</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="nav-bar">
+        <button class="nav-btn c-deteccao" onclick="showPhase('fase_det')">DETECÇÃO</button>
+        <button class="nav-btn c-analise" onclick="showPhase('fase_ana')">ANÁLISE</button>
+        <button class="nav-btn c-contencao" onclick="showPhase('fase3')">CONTENÇÃO</button>
+        <button class="nav-btn c-erradicacao" onclick="showPhase('fase3b')">ERRADICAÇÃO</button>
+        <button class="nav-btn c-recuperacao" onclick="showPhase('fase4')">RECUPERAÇÃO</button>
+        <button class="nav-btn c-pos" onclick="showPhase('fase5')">PÓS-INCIDENTE</button>
+    </div>
+
+    <script>
+        function showPhase(id) {
+            document.querySelectorAll('.content-card').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.extra-info').forEach(i => i.style.display = 'none');
+            document.getElementById(id).classList.add('active');
+        }
+        function toggleDetails(id) {
+            const el = document.getElementById(id);
+            el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+            if(el.style.display === 'block') el.scrollIntoView({ behavior: 'smooth' });
+        }
+        function toggleMenu() {
+            const m = document.getElementById("sideMenu");
+            m.style.width = (m.style.width === "280px") ? "0" : "280px";
+        }
+    </script>
+</body>
+</html>
