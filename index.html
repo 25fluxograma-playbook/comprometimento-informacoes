@@ -23,6 +23,8 @@
             --dark-red: #da0505;
             --info-blue: #2196F3;
             --lgpd-purple: #6f42c1;
+            --check-green: #4CAF50;
+            --check-red: #f44336;
         }
 
         body {
@@ -270,7 +272,7 @@
         .c7 { background: linear-gradient(135deg, var(--info-blue), #0d47a1); }
 
         .img-container { 
-            width: 90%; 
+            width: 100%; 
             text-align: center; 
             margin-bottom: 20px; 
             background: #f5f5f5; 
@@ -281,7 +283,7 @@
         .img-container img { 
             max-width: 100%; 
             height: auto; 
-            border-radius: px;
+            border-radius: 4px;
         }
         
         .btn-details { 
@@ -313,110 +315,115 @@
             animation: fadeIn 0.4s ease;
         }
         
-        /* ESTILOS PARA TABELAS */
-        .tabela-evidencias {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 25px 0;
-            font-size: 0.95em;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        /* ESTILOS PARA CHECKLISTS OPERACIONAIS */
+        .checklist-container {
+            background: #f9f9f9;
             border-radius: 8px;
-            overflow: hidden;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid var(--dark-blue);
         }
         
-        .tabela-evidencias thead tr {
-            background: linear-gradient(135deg, var(--table), #1a2c4e);
-            color: white;
-        }
-        
-        .tabela-evidencias th {
-            padding: 18px 15px;
-            text-align: left;
-            font-weight: 600;
-            font-size: 0.95em;
-            border: none;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .tabela-evidencias tbody tr {
-            border-bottom: 1px solid #e0e0e0;
-            transition: all 0.2s ease;
-        }
-        
-        .tabela-evidencias tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        
-        .tabela-evidencias tbody tr:hover {
-            background-color: #e8f4ff;
-            transform: translateY(-2px);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-        
-        .tabela-evidencias td {
-            padding: 16px 15px;
-            vertical-align: top;
-            border: none;
-        }
-        
-        .tabela-evidencias td:first-child {
-            font-weight: 600;
-            color: var(--dark-blue);
-            border-right: 2px solid #e0e0e0;
-            background-color: rgba(0,0,102,0.02);
-        }
-        
-        .tabela-evidencias td:last-child {
-            color: #555;
-        }
-        
-        .destaque-tabela {
-            background-color: #fff8e1;
-            padding: 10px;
-            border-radius: 5px;
-            margin-top: 8px;
-            border-left: 4px solid #ffb300;
-            font-size: 0.9em;
-        }
-        
-        @keyframes fadeIn { 
-            from { 
-                opacity: 0; 
-                transform: translateY(10px); 
-            } 
-            to { 
-                opacity: 1; 
-                transform: translateY(0); 
-            } 
-        }
-
-        .phase-title {
+        .checklist-header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #eee;
+            gap: 10px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
         }
-
-        h2 {
+        
+        .checklist-header h4 {
             margin: 0;
+            color: var(--dark-blue);
             font-weight: 600;
         }
         
-        h3 {
-            color: var(--dark-blue);
-            margin-top: 30px;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 8px;
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background: white;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            transition: 0.2s;
         }
         
-        h4 {
+        .checklist-item:hover {
+            background: #f0f8ff;
+            border-color: var(--info-blue);
+        }
+        
+        .checklist-task {
+            flex: 1;
+            font-size: 0.95em;
             color: #333;
-            margin-top: 20px;
-            margin-bottom: 10px;
+        }
+        
+        .checklist-options {
+            display: flex;
+            gap: 15px;
+            margin-left: 20px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+        
+        .radio-option input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--check-green);
+        }
+        
+        .radio-label {
+            font-size: 0.9em;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        .radio-yes .radio-label {
+            color: var(--check-green);
+        }
+        
+        .radio-no .radio-label {
+            color: var(--check-red);
+        }
+        
+        .timestamp-field {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: #fff3e0;
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            border-left: 4px solid var(--orange);
+        }
+        
+        .timestamp-field label {
+            font-weight: bold;
+            color: var(--orange);
+            min-width: 180px;
+        }
+        
+        .timestamp-field input {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: 'Roboto', sans-serif;
+            flex: 1;
+        }
+        
+        .timestamp-field input:focus {
+            border-color: var(--orange);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(219, 131, 43, 0.2);
         }
         
         .badge {
@@ -499,6 +506,98 @@
         .status-scheduled { background-color: #2196F3; color: white; }
         .status-completed { background-color: #4CAF50; color: white; }
         
+        .tabela-evidencias {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 0.95em;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .tabela-evidencias thead tr {
+            background: linear-gradient(135deg, var(--table), #1a2c4e);
+            color: white;
+        }
+        
+        .tabela-evidencias th {
+            padding: 18px 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95em;
+            border: none;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .tabela-evidencias tbody tr {
+            border-bottom: 1px solid #e0e0e0;
+            transition: all 0.2s ease;
+        }
+        
+        .tabela-evidencias tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .tabela-evidencias tbody tr:hover {
+            background-color: #e8f4ff;
+        }
+        
+        .tabela-evidencias td {
+            padding: 16px 15px;
+            vertical-align: top;
+            border: none;
+        }
+        
+        .destaque-tabela {
+            background-color: #fff8e1;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 8px;
+            border-left: 4px solid #ffb300;
+            font-size: 0.9em;
+        }
+        
+        @keyframes fadeIn { 
+            from { 
+                opacity: 0; 
+                transform: translateY(10px); 
+            } 
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            } 
+        }
+
+        .phase-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+
+        h2 {
+            margin: 0;
+            font-weight: 600;
+        }
+        
+        h3 {
+            color: var(--dark-blue);
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+        }
+        
+        h4 {
+            color: #333;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
         @media (max-width: 768px) {
             .tabela-evidencias {
                 display: block;
@@ -514,6 +613,16 @@
             .nav-btn {
                 font-size: 8px;
                 padding: 10px 1px;
+            }
+            
+            .checklist-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .checklist-options {
+                margin-left: 0;
+                margin-top: 10px;
             }
         }
     </style>
@@ -535,7 +644,7 @@
             <div class="lgpd-description">
                 <h3 style="color: var(--lgpd-purple); margin-top: 0;">Lei nº 13.709/2018 - Lei Geral de Proteção de Dados</h3>
                 
-                <p><strong>Obrigações da UFRGS em caso de vazamento:</strong></p>
+                <p><strong>Ações da UFRGS em caso de vazamento:</strong></p>
                 <ul>
                     <li><strong>Comunicação à ANPD:</strong> O encarregado (DPO) deve comunicar à Autoridade Nacional de Proteção de Dados em prazo razoável, conforme determinação da ANPD.</li>
                     <li><strong>Comunicação aos titulares:</strong> Os titulares dos dados pessoais afetados devem ser informados sobre o incidente, com descrição clara da natureza dos dados comprometidos.</li>
@@ -576,10 +685,10 @@
                 <i class="fas fa-download"></i> 1. Preparação
             </a>
             <a href="#" class="pdf-item" onclick="downloadPDF('fase2')">
-                <i class="fas fa-download"></i> 2. Detecção
+                <i class="fas fa-download"></i> 2. Detecção e Triagem
             </a>
             <a href="#" class="pdf-item" onclick="downloadPDF('fase3')">
-                <i class="fas fa-download"></i> 3. Análise
+                <i class="fas fa-download"></i> 3. Análise e Investigação
             </a>
             <a href="#" class="pdf-item" onclick="downloadPDF('fase4')">
                 <i class="fas fa-download"></i> 4. Contenção
@@ -588,10 +697,10 @@
                 <i class="fas fa-download"></i> 5. Erradicação
             </a>
             <a href="#" class="pdf-item" onclick="downloadPDF('fase6')">
-                <i class="fas fa-download"></i> 6. Recuperação
+                <i class="fas fa-download"></i> 6. Recuperação e Validação
             </a>
             <a href="#" class="pdf-item" onclick="downloadPDF('fase7')">
-                <i class="fas fa-download"></i> 7. Pós-Incidente
+                <i class="fas fa-download"></i> 7. Atividades Pós-Incidente
             </a>
             <a href="#" class="pdf-item" onclick="downloadPDF('completo')">
                 <i class="fas fa-file-pdf"></i> Playbook Completo
@@ -605,10 +714,10 @@
     <div class="viewport">
         <h1 style="text-align: center; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">
             <i class="fas fa-database" style="margin-right: 15px;"></i> 
-             TRATAMENTO DE INCIDENTE DE SEGURANÇA
+            VAZAMENTO DE INFORMAÇÕES
         </h1>
         <p style="text-align: center; margin-top: -10px; font-size: 1.2em; opacity: 0.9;">
-            Vazamento de Informações 
+            Plano de Resposta a Incidentes e Forense | UFRGS
         </p>
         
         <!-- PÁGINA PRINCIPAL -->
@@ -627,7 +736,6 @@
             <div style="background-color: #f0f8ff; padding: 25px; border-radius: 8px; margin-top: 20px; border-left: 5px solid var(--dark-blue);">
                 <h3 style="color: var(--dark-blue); margin-top: 0;">Contexto da UFRGS</h3>
                 <p>No ecossistema digital da UFRGS, a <strong>informação é o ativo mais valioso</strong>. Conforme o Catálogo de Serviços do CPD, os dados circulam de forma integrada entre sistemas estratégicos. Um vazamento na Universidade não é apenas um incidente técnico; é um evento que pode expor a privacidade de milhares de alunos, docentes e servidores, além de comprometer anos de investimento em ciência e tecnologia.</p>
-                <p>Diferente de um incidente de malware isolado, o <strong>vazamento de informações na UFRGS possui um caráter transversal</strong>, onde a exposição de um banco de dados pode ecoar em múltiplas esferas — da administrativa à acadêmica — violando a confiança da comunidade e a soberania do conhecimento produzido.</p>
             </div>
             
             <div class="grid-container">
@@ -636,340 +744,341 @@
                     <p><strong>SEI e Portal de Serviços:</strong> Vazamento expõe processos sigilosos, folha de pagamento, contratos e assinaturas digitais</p>
                     <span class="badge badge-critical">CRÍTICO</span>
                 </div>
-                
                 <div class="grid-item" style="border-left: 4px solid var(--orange);">
                     <h4 style="color: var(--orange);"><i class="fas fa-graduation-cap"></i> Ensino e Aprendizagem</h4>
                     <p><strong>Moodle e Mconf:</strong> Dados pessoais de estudantes, histórico escolar, avaliações e direitos autorais</p>
                     <span class="badge badge-high">ALTO</span>
                 </div>
-                
                 <div class="grid-item" style="border-left: 4px solid var(--purple);">
                     <h4 style="color: var(--purple);"><i class="fas fa-flask"></i> Informação e Conhecimento</h4>
                     <p><strong>Lume e Periódicos:</strong> Propriedade intelectual, patentes, pesquisas clínicas e sociais sensíveis</p>
                     <span class="badge badge-critical">CRÍTICO</span>
                 </div>
-                
-                <div class="grid-item" style="border-left: 4px solid var(--info-blue);">
-                    <h4 style="color: var(--info-blue);"><i class="fas fa-wifi"></i> Infraestrutura de Base</h4>
-                    <p><strong>Eduroam, VPN:</strong> Pontos de fuga para exfiltração silenciosa de propriedade intelectual</p>
-                    <span class="badge badge-medium">MÉDIO</span>
-                </div>
-            </div>
-            
-            <div class="info-box">
-                <h4 style="color: var(--info-blue); margin-top: 0;">🎯 Objetivos Estratégicos do Playbook</h4>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-                    <div><strong>1. Detecção e Triagem:</strong> Identificação ágil de exfiltração</div>
-                    <div><strong>2. Contenção e Estancamento:</strong> Bloqueio de vetores de saída</div>
-                    <div><strong>3. Investigação Forense:</strong> Determinar dados expostos e impacto</div>
-                    <div><strong>4. Remediação e Notificação:</strong> LGPD e ANPD</div>
-                    <div><strong>5. Aprimoramento:</strong> Governança e classificação de dados</div>
-                </div>
-            </div>
-            
-            <div class="lgpd-box">
-                <h4 style="color: var(--lgpd-purple); margin-top: 0;"><i class="fas fa-gavel"></i> Conformidade Legal</h4>
-                <p>Este playbook assegura o cumprimento das obrigações de transparência, notificando os titulares dos dados e a ANPD (Autoridade Nacional de Proteção de Dados) conforme exigido pela <strong>Lei nº 13.709/2018 (LGPD)</strong>.</p>
-                <p style="margin-bottom: 0;"><strong>DPO/UFRGS:</strong> Responsável pela comunicação oficial do incidente.</p>
             </div>
             
             <p style="text-align: center; font-size: 1.1em; margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px;">
-                <i class="fas fa-arrow-down" style="color: var(--red);"></i> Selecione uma fase abaixo para acessar os procedimentos detalhados <i class="fas fa-arrow-down" style="color: var(--red);"></i>
+                <i class="fas fa-arrow-down" style="color: var(--red);"></i> Selecione uma fase abaixo para acessar os procedimentos detalhados e checklists operacionais <i class="fas fa-arrow-down" style="color: var(--red);"></i>
             </p>
         </div>
 
-        <!-- FASE 1: PREPARAÇÃO -->
+        <!-- FASE 1: PREPARAÇÃO (Antes do Incidente) -->
         <div id="fase1" class="content-card">
             <div class="phase-title">
                 <h2 style="color: var(--green)">Fase 1: Preparação</h2>
-                <span class="badge" style="background-color: var(--green);">Controles Proativos</span>
+                <span class="badge" style="background-color: var(--green);">ANTES DO INCIDENTE</span>
             </div>
-            <p>A fase de preparação para o comprometimento de informações visa estabelecer <strong>controles rigorosos sobre a custódia dos dados</strong>. O foco é garantir que a instituição conheça a localização, a sensibilidade e o fluxo das informações, permitindo que qualquer desvio de integridade ou confidencialidade seja mitigado antes que resulte em sanções da LGPD ou danos reputacionais graves.</p>
+            <p>A fase de preparação estabelece <strong>controles rigorosos sobre a custódia dos dados</strong> e fortalece a postura de segurança antes que um incidente ocorra.</p>
             
-            <button class="btn-details" onclick="toggleDetails('d1')">
-                <i class="fas fa-cogs"></i> VER PROCEDIMENTOS COMPLETOS
-            </button>
-            <div id="d1" class="extra-info">
-                <h3>📋 INVENTÁRIO DE DADOS CRÍTICOS</h3>
-                <p>Mapear onde residem as informações sensíveis e quem possui acesso a elas.</p>
-                <ul>
-                    <li><strong>Classificação de dados:</strong> Público, Interno, Confidencial, Restrito (LGPD)</li>
-                    <li><strong>Mapeamento de fluxos:</strong> Como os dados trafegam entre sistemas</li>
-                    <li><strong>Titulares:</strong> Alunos, servidores, pesquisadores, terceiros</li>
-                    <li><strong>Períodos de retenção:</strong> Políticas de backup e descarte</li>
-                </ul>
-                
-                <h3>🛡️ DLP (DATA LOSS PREVENTION)</h3>
-                <p>Configuração de regras para detectar movimentação anômala de volumes de dados.</p>
-                <table class="tabela-evidencias">
-                    <thead>
-                        <tr>
-                            <th>TIPO DE REGRA</th>
-                            <th>DESCRIÇÃO</th>
-                            <th>EXEMPLO</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Volume de saída</td>
-                            <td>Alertar quando tráfego de upload exceder baseline</td>
-                            <td>Servidor enviando >100MB/h para IP externo</td>
-                        </tr>
-                        <tr>
-                            <td>Padrões de dados</td>
-                            <td>Identificar CPF, cartão de crédito, dados sigilosos</td>
-                            <td>Planilha com CPFs enviada por e-mail</td>
-                        </tr>
-                        <tr>
-                            <td>APIs sensíveis</td>
-                            <td>Monitorar chamadas a endpoints com dados pessoais</td>
-                            <td>Extração massiva via API do SEI</td>
-                        </tr>
-                    </tbody>
-                </table>
-                
-                <h3>💾 BACKUPS IMUTÁVEIS E CRIPTOGRAFADOS</h3>
-                <p>Proteger backups contra leitura não autorizada e deleção por atacantes.</p>
-                <ul>
-                    <li><strong>Imutabilidade:</strong> Backups que não podem ser alterados ou deletados durante o período de retenção</li>
-                    <li><strong>Criptografia:</strong> Dados criptografados em repouso e em trânsito</li>
-                    <li><strong>Estratégia 3-2-1:</strong> 3 cópias, 2 mídias diferentes, 1 off-site</li>
-                    <li><strong>Testes periódicos:</strong> Restauração validada trimestralmente</li>
-                </ul>
-                
-                <h3>🔐 MFA E ZERO TRUST</h3>
-                <p>Garantir que 100% dos acessos administrativos e repositórios de dados exijam Múltiplo Fator de Autenticação.</p>
-                <div style="background-color: #e8f5e9; padding: 15px; border-radius: 5px; margin: 15px 0;">
-                    <strong>Implementação prioritária:</strong>
-                    <ul>
-                        <li>Acessos SSH e RDP administrativos</li>
-                        <li>Consoles de banco de dados</li>
-                        <li>Ferramentas de administração em nuvem</li>
-                        <li>Acesso a sistemas com dados sensíveis (SEI, Moodle)</li>
-                    </ul>
+            <div class="checklist-container">
+                <div class="checklist-header">
+                    <i class="fas fa-clipboard-check" style="font-size: 24px; color: var(--green);"></i>
+                    <h4>CHECKLIST OPERACIONAL - PREPARAÇÃO</h4>
                 </div>
                 
-                <h3>🔧 HARDENING DE SISTEMAS</h3>
-                <p>Aplicação de configurações de segurança rigorosas seguindo benchmarks CIS e políticas internas.</p>
+                <!-- Hardening de Ativos -->
+                <div class="checklist-item">
+                    <div class="checklist-task">
+                        <strong>🔧 Hardening de Ativos:</strong> Fortalecer as configurações de servidores e bancos de dados para reduzir a superfície de ataque.
+                    </div>
+                    <div class="checklist-options">
+                        <label class="radio-option radio-yes">
+                            <input type="radio" name="prep1" value="sim"> <span class="radio-label">SIM</span>
+                        </label>
+                        <label class="radio-option radio-no">
+                            <input type="radio" name="prep1" value="nao"> <span class="radio-label">NÃO</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Implementação de EDR/Antivírus -->
+                <div class="checklist-item">
+                    <div class="checklist-task">
+                        <strong>🛡️ Implementação de EDR/Antivírus:</strong> Garantir agentes de detecção instalados em 100% dos servidores críticos.
+                    </div>
+                    <div class="checklist-options">
+                        <label class="radio-option radio-yes">
+                            <input type="radio" name="prep2" value="sim"> <span class="radio-label">SIM</span>
+                        </label>
+                        <label class="radio-option radio-no">
+                            <input type="radio" name="prep2" value="nao"> <span class="radio-label">NÃO</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Gestão de Vulnerabilidades -->
+                <div class="checklist-item">
+                    <div class="checklist-task">
+                        <strong>📊 Gestão de Vulnerabilidades:</strong> Realizar varreduras mensais e aplicação de patches de segurança.
+                    </div>
+                    <div class="checklist-options">
+                        <label class="radio-option radio-yes">
+                            <input type="radio" name="prep3" value="sim"> <span class="radio-label">SIM</span>
+                        </label>
+                        <label class="radio-option radio-no">
+                            <input type="radio" name="prep3" value="nao"> <span class="radio-label">NÃO</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Controle de Acesso e MFA -->
+                <div class="checklist-item">
+                    <div class="checklist-task">
+                        <strong>🔐 Controle de Acesso e MFA:</strong> Validar se todos os acessos administrativos exigem o Múltiplo Fator de Autenticação.
+                    </div>
+                    <div class="checklist-options">
+                        <label class="radio-option radio-yes">
+                            <input type="radio" name="prep4" value="sim"> <span class="radio-label">SIM</span>
+                        </label>
+                        <label class="radio-option radio-no">
+                            <input type="radio" name="prep4" value="nao"> <span class="radio-label">NÃO</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Backups Imutáveis -->
+                <div class="checklist-item">
+                    <div class="checklist-task">
+                        <strong>💾 Backups Imutáveis:</strong> Configurar cópias de segurança que não podem ser alteradas ou deletadas por processos do servidor.
+                    </div>
+                    <div class="checklist-options">
+                        <label class="radio-option radio-yes">
+                            <input type="radio" name="prep5" value="sim"> <span class="radio-label">SIM</span>
+                        </label>
+                        <label class="radio-option radio-no">
+                            <input type="radio" name="prep5" value="nao"> <span class="radio-label">NÃO</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="timestamp-field">
+                    <label><i class="fas fa-clock"></i> Última validação do checklist:</label>
+                    <input type="datetime-local" id="prepTimestamp">
+                </div>
+            </div>
+            
+            <button class="btn-details" onclick="toggleDetails('d1')">
+                <i class="fas fa-cogs"></i> VER PROCEDIMENTOS DETALHADOS
+            </button>
+            <div id="d1" class="extra-info">
+                <h3>📋 DETALHAMENTO DOS CONTROLES DE PREPARAÇÃO</h3>
                 <ul>
-                    <li><strong>Remoção de serviços desnecessários:</strong> Redução da superfície de ataque</li>
-                    <li><strong>Princípio do menor privilégio:</strong> Acessos mínimos necessários</li>
-                    <li><strong>Segmentação de rede:</strong> VLANs para isolar dados críticos</li>
-                    <li><strong>Proibição de Shadow IT:</strong> Bloqueio de nuvens pessoais para dados institucionais</li>
+                    <li><strong>Hardening:</strong> Aplicar benchmarks CIS, desabilitar serviços não essenciais, remover contas padrão</li>
+                    <li><strong>EDR:</strong> Configurar políticas de detecção baseadas em comportamento e integrar com SIEM</li>
+                    <li><strong>Vulnerabilidades:</strong> Priorização por CVSS Score, janelas de manutenção predefinidas</li>
+                    <li><strong>MFA:</strong> Implementar para SSH, RDP, consoles administrativos e acesso a dados sensíveis</li>
+                    <li><strong>Backups:</strong> Estratégia 3-2-1 (3 cópias, 2 mídias, 1 off-site) com imutabilidade</li>
                 </ul>
             </div>
         </div>
 
-        <!-- FASE 2: DETECÇÃO -->
+        <!-- FASE 2: DETECÇÃO E TRIAGEM (Início do Fluxo) -->
         <div id="fase2" class="content-card">
             <div class="phase-title">
-                <h2 style="color: var(--orange)">Fase 2: Detecção</h2>
-                <span class="badge" style="background-color: var(--orange);">Indicadores de Exfiltração (IoEs)</span>
+                <h2 style="color: var(--orange)">Fase 2: Detecção e Triagem</h2>
+                <span class="badge" style="background-color: var(--orange);">INÍCIO DO FLUXO</span>
             </div>
-            <p>Visa identificar <strong>indicadores de exfiltração (IoEs)</strong> e atividades que sugiram que o sigilo dos dados foi rompido.</p>
+            <p>Identificação de indicadores de exfiltração (IoEs) e atividades que sugiram que o sigilo dos dados foi rompido.</p>
+            
+            <div class="checklist-container">
+                <div class="checklist-header">
+                    <i class="fas fa-clipboard-check" style="font-size: 24px; color: var(--orange);"></i>
+                    <h4>CHECKLIST OPERACIONAL - DETECÇÃO E TRIAGEM</h4>
+                </div>
+                
+                <!-- Registrar Hora da Detecção -->
+                <div class="checklist-item">
+                    <div class="checklist-task">
+                        <strong>⏱️ Registrar a Hora da Detecção:</strong> Momento do alerta inicial.
+                    </div>
+                    <div class="checklist-options">
+                        <label class="radio-option radio-yes">
+                            <input type="radio" name="det1" value="sim"> <span class="radio-label">SIM</span>
+                        </label>
+                        <label class="radio-option radio-no">
+                            <input type="radio" name="det1" value="nao"> <span class="radio-label">NÃO</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="timestamp-field">
+                    <label><i class="fas fa-clock"></i> Hora da Detecção:</label>
+                    <input type="datetime-local" id="detHoraDetecao">
+                </div>
+                
+                <!-- Confirmar o Incidente -->
+                <div class="checklist-item">
+                    <div class="checklist-task">
+                        <strong>✅ Confirmar o Incidente:</strong> Validar se o alerta é uma exfiltração real ou falso positivo.
+                    </div>
+                    <div class="checklist-options">
+                        <label class="radio-option radio-yes">
+                            <input type="radio" name="det2" value="sim"> <span class="radio-label">SIM</span>
+                        </label>
+                        <label class="radio-option radio-no">
+                            <input type="radio" name="det2" value="nao"> <span class="radio-label">NÃO</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Registrar Hora da Confirmação -->
+                <div class="checklist-item">
+                    <div class="checklist-task">
+                        <strong>⏱️ Registrar a Hora da Confirmação:</strong> Momento da validação técnica da atividade maliciosa.
+                    </div>
+                    <div class="checklist-options">
+                        <label class="radio-option radio-yes">
+                            <input type="radio" name="det3" value="sim"> <span class="radio-label">SIM</span>
+                        </label>
+                        <label class="radio-option radio-no">
+                            <input type="radio" name="det3" value="nao"> <span class="radio-label">NÃO</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="timestamp-field">
+                    <label><i class="fas fa-clock"></i> Hora da Confirmação:</label>
+                    <input type="datetime-local" id="detHoraConfirmacao">
+                </div>
+                
+                <!-- Classificar a Gravidade -->
+                <div class="checklist-item">
+                    <div class="checklist-task">
+                        <strong>⚠️ Classificar a Gravidade:</strong> Definir o nível de risco (Crítico a Baixo).
+                    </div>
+                    <div class="checklist-options">
+                        <label class="radio-option radio-yes">
+                            <input type="radio" name="det4" value="sim"> <span class="radio-label">SIM</span>
+                        </label>
+                        <label class="radio-option radio-no">
+                            <input type="radio" name="det4" value="nao"> <span class="radio-label">NÃO</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Abrir Chamado (SC) -->
+                <div class="checklist-item">
+                    <div class="checklist-task">
+                        <strong>📌 Abrir Chamado (SC):</strong> Registrar para garantir rastreabilidade.
+                    </div>
+                    <div class="checklist-options">
+                        <label class="radio-option radio-yes">
+                            <input type="radio" name="det5" value="sim"> <span class="radio-label">SIM</span>
+                        </label>
+                        <label class="radio-option radio-no">
+                            <input type="radio" name="det5" value="nao"> <span class="radio-label">NÃO</span>
+                        </label>
+                    </div>
+                </div>
+                <div style="margin-top: 10px; padding: 10px; background: #e8f4fd; border-radius: 4px;">
+                    <strong>Nº do Chamado:</strong> <input type="text" placeholder="SC-2025-XXXX" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; width: 200px; margin-left: 10px;">
+                </div>
+            </div>
             
             <button class="btn-details" onclick="toggleDetails('d2')">
-                <i class="fas fa-search"></i> VER SINAIS DE ALERTA E PROCESSOS
+                <i class="fas fa-search"></i> VER SINAIS DE ALERTA
             </button>
             <div id="d2" class="extra-info">
                 <h3>🚨 PRINCIPAIS SINAIS DE ALERTA</h3>
-                
-                <table class="tabela-evidencias">
-                    <thead>
-                        <tr>
-                            <th>SINAL DE ALERTA</th>
-                            <th>DESCRIÇÃO</th>
-                            <th>EXEMPLO NA UFRGS</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Exfiltração de Volume</strong></td>
-                            <td>Alto tráfego de saída (Upload) via portas não convencionais</td>
-                            <td>Servidor do Moodle enviando 50GB às 03:00 para IP na Rússia</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Acesso Incoerente</strong></td>
-                            <td>Sucesso de login em bancos de dados em horários atípicos ou via IPs internacionais</td>
-                            <td>Login no SEI às 02:30 de IP chinês</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Alteração de Auditoria</strong></td>
-                            <td>Limpeza de logs de acesso ou desativação de ferramentas de segurança</td>
-                            <td>Logs de acesso do banco de dados zerados sem justificativa</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Shadow IT Ativo</strong></td>
-                            <td>Servidores estabelecendo conexões com serviços de nuvem pública não homologados</td>
-                            <td>Servidor de pesquisa enviando dados para Dropbox pessoal</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Queries Anômalas</strong></td>
-                            <td>Consultas SQL que retornam grandes volumes (SELECT * FROM alunos)</td>
-                            <td>Extração completa da base de alunos do Moodle</td>
-                        </tr>
-                    </tbody>
-                </table>
-                
-                <h3>⚖️ PROCESSO DE TOMADA DE DECISÃO</h3>
-                
-                <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                    <h4>Confirmação do Incidente</h4>
-                    <p>O incidente é confirmado quando a <strong>análise cruzada</strong> (Logs de Banco + Tráfego de Rede + EDR) indica saída de dados sem justificativa.</p>
-                </div>
-                
-                <div style="background-color: #fff3cd; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #ffc107;">
-                    <h4>Dúvida ou Incerteza</h4>
-                    <p>Se não houver evidência clara de que a informação foi de fato "lida" ou "extraída", deve-se reforçar o monitoramento sobre os ativos envolvidos e realizar uma análise forense preliminar.</p>
-                    <p><strong>Observação Ativa:</strong> Em vez de cortar o acesso, a equipe monitora o destino dos dados. Isso é vital para identificar o servidor de Comando e Controle (C2) do atacante.</p>
-                </div>
-                
-                <h3>📊 FERRAMENTAS DE DETECÇÃO</h3>
                 <ul>
-                    <li><strong>SIEM:</strong> Correlação de eventos e alertas de volumetria anômala</li>
-                    <li><strong>DLP:</strong> Identificação de padrões de dados sensíveis em movimento</li>
-                    <li><strong>EDR:</strong> Detecção de infostealers e processos de compressão suspeitos</li>
-                    <li><strong>NetFlow:</strong> Análise de tráfego e conexões incomuns</li>
-                    <li><strong>WAF:</strong> Bloqueio de tentativas de injeção SQL para extração</li>
+                    <li><strong>Exfiltração de Volume:</strong> Alto tráfego de saída via portas não convencionais</li>
+                    <li><strong>Acesso Incoerente:</strong> Logins em horários atípicos ou IPs internacionais</li>
+                    <li><strong>Alteração de Auditoria:</strong> Limpeza de logs ou desativação de ferramentas</li>
+                    <li><strong>Shadow IT:</strong> Conexões com serviços de nuvem não homologados</li>
                 </ul>
             </div>
         </div>
 
-        <!-- FASE 3: ANÁLISE -->
+        <!-- FASE 3: ANÁLISE E INVESTIGAÇÃO -->
         <div id="fase3" class="content-card">
             <div class="phase-title">
-                <h2 style="color: var(--red)">Fase 3: Análise</h2>
-                <span class="badge" style="background-color: var(--red);">Investigação Forense</span>
+                <h2 style="color: var(--red)">Fase 3: Análise e Investigação</h2>
+                <span class="badge" style="background-color: var(--red);">CAIXA: INVESTIGAÇÃO</span>
             </div>
-            <p>Investigação minuciosa para determinar a <strong>profundidade do vazamento</strong> e quais dados foram expostos.</p>
-          
+            <p>Investigação minuciosa para determinar a profundidade do vazamento e quais dados foram expostos.</p>
+            
+            <div class="checklist-container">
+                <div class="checklist-header">
+                    <i class="fas fa-clipboard-check" style="font-size: 24px; color: var(--red);"></i>
+                    <h4>CHECKLIST OPERACIONAL - ANÁLISE E INVESTIGAÇÃO</h4>
+                </div>
+                
+                <!-- Identificar o Paciente Zero -->
+                <div class="checklist-item">
+                    <div class="checklist-task">
+                        <strong>🦠 Identificar o Paciente Zero:</strong> Determinar o vetor de entrada do invasor.
+                    </div>
+                    <div class="checklist-options">
+                        <label class="radio-option radio-yes">
+                            <input type="radio" name="analise1" value="sim"> <span class="radio-label">SIM</span>
+                        </label>
+                        <label class="radio-option radio-no">
+                            <input type="radio" name="analise1" value="nao"> <span class="radio-label">NÃO</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Coletar Evidências -->
+                <div class="checklist-item" style="background: #fff8e1;">
+                    <div class="checklist-task">
+                        <strong>📀 Coletar Evidências:</strong>
+                        <ul style="margin: 5px 0 0 20px; color: #555;">
+                            <li>Realizar dump da memória RAM e imagem forense</li>
+                            <li>Extrair logs de acesso e auditoria</li>
+                        </ul>
+                    </div>
+                    <div class="checklist-options">
+                        <label class="radio-option radio-yes">
+                            <input type="radio" name="analise2" value="sim"> <span class="radio-label">SIM</span>
+                        </label>
+                        <label class="radio-option radio-no">
+                            <input type="radio" name="analise2" value="nao"> <span class="radio-label">NÃO</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Quantificar a Exfiltração -->
+                <div class="checklist-item">
+                    <div class="checklist-task">
+                        <strong>📊 Quantificar a Exfiltração:</strong> Estimar o volume de dados extraídos via logs de tráfego.
+                    </div>
+                    <div class="checklist-options">
+                        <label class="radio-option radio-yes">
+                            <input type="radio" name="analise3" value="sim"> <span class="radio-label">SIM</span>
+                        </label>
+                        <label class="radio-option radio-no">
+                            <input type="radio" name="analise3" value="nao"> <span class="radio-label">NÃO</span>
+                        </label>
+                    </div>
+                </div>
+                <div style="margin-top: 10px; padding: 10px; background: #fff3cd; border-radius: 4px;">
+                    <strong>Volume estimado:</strong> <input type="text" placeholder="Ex: 50 GB" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; width: 150px; margin-left: 10px;">
+                </div>
+                
+                <!-- Mapear Movimentação Lateral -->
+                <div class="checklist-item">
+                    <div class="checklist-task">
+                        <strong>🕸️ Mapear Movimentação Lateral:</strong> Verificar se outros servidores foram acessados.
+                    </div>
+                    <div class="checklist-options">
+                        <label class="radio-option radio-yes">
+                            <input type="radio" name="analise4" value="sim"> <span class="radio-label">SIM</span>
+                        </label>
+                        <label class="radio-option radio-no">
+                            <input type="radio" name="analise4" value="nao"> <span class="radio-label">NÃO</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
             <button class="btn-details" onclick="toggleDetails('d3')">
-                <i class="fas fa-microscope"></i> VER PROCEDIMENTOS FORENSES
+                <i class="fas fa-microscope"></i> VER TÉCNICAS FORENSES
             </button>
             <div id="d3" class="extra-info">
-                <h3>🔍 COLETA DE EVIDÊNCIAS DE VAZAMENTO</h3>
-                
-                <table class="tabela-evidencias">
-                    <thead>
-                        <tr>
-                            <th width="25%">AÇÕES</th>
-                            <th width="75%">EVIDÊNCIAS PRIORITÁRIAS</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Identificar Vetor de Entrada</strong></td>
-                            <td>
-                                Logs de acesso Web e logs de Auditoria do Banco de Dados
-                                <div class="destaque-tabela">
-                                    <strong>Exemplo:</strong> SQL Injection detectada no Moodle com extração de dados
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>Mapear Dados Acessados</strong></td>
-                            <td>
-                                Queries executadas no banco e registros de acesso a arquivos
-                                <div class="destaque-tabela">
-                                    <strong>Exemplo:</strong> SELECT * FROM alunos; SELECT * FROM folha_pagamento;
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>Detectar Exfiltração</strong></td>
-                            <td>
-                                Logs de Firewall de borda e volumetria de Upload/NetFlow
-                                <div class="destaque-tabela">
-                                    <strong>Exemplo:</strong> 10GB enviados para 45.33.22.11 (servidor C2)
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>Analisar Persistência</strong></td>
-                            <td>
-                                Verificação de Web Shells e novas chaves de API/Tokens
-                                <div class="destaque-tabela">
-                                    <strong>Exemplo:</strong> Shell.php oculto em /var/www/html/uploads/
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>Preservar para LGPD</strong></td>
-                            <td>
-                                Imagem forense, dump de memória e logs de tráfego para relatório à ANPD
-                                <div class="destaque-tabela">
-                                    <strong>Exemplo:</strong> Preservação de evidências para cadeia de custódia
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                
-                <h3>🧪 TÉCNICAS AVANÇADAS DE ANÁLISE</h3>
-                
-                <div class="grid-container">
-                    <div class="grid-item">
-                        <h4><i class="fas fa-memory"></i> Live Forensics (Memória)</h4>
-                        <p>Essencial para identificar malwares que não deixam rastros no disco (fileless) e que estão injetados em processos legítimos do servidor para exfiltrar dados silenciosamente.</p>
-                        <ul>
-                            <li><strong>Ferramentas:</strong> Volatility, Rekall, LiME</li>
-                            <li><strong>Foco:</strong> Processos ocultos, conexões C2</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="grid-item">
-                        <h4><i class="fas fa-clock"></i> Timeline do Sistema</h4>
-                        <p>Reconstruir o passo a passo do invasor ajuda a identificar quais pastas de pesquisa ou diretórios administrativos foram abertos e copiados.</p>
-                        <ul>
-                            <li><strong>Ferramentas:</strong> Sleuth Kit, Autopsy</li>
-                            <li><strong>Foco:</strong> MAC times (Modified, Accessed, Changed)</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="grid-item">
-                        <h4><i class="fas fa-network-wired"></i> Movimentação Lateral</h4>
-                        <p>Verificar se o atacante, após vazar dados de um servidor web, utilizou protocolos como SMB ou RDP para "saltar" para o banco de dados central.</p>
-                        <ul>
-                            <li><strong>Foco:</strong> Conexões internas não autorizadas</li>
-                            <li><strong>Risco:</strong> Comprometimento do AD/LDAP</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <h3>🎯 MAPEAMENTO MITRE ATT&CK</h3>
-                <table class="tabela-evidencias">
-                    <thead>
-                        <tr>
-                            <th>TÁTICA</th>
-                            <th>TÉCNICA</th>
-                            <th>DESCRIÇÃO</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>TA0010</strong></td>
-                            <td>Exfiltração</td>
-                            <td>Exfiltration Over C2 Channel, Transfer Size Limits</td>
-                        </tr>
-                        <tr>
-                            <td><strong>TA0011</strong></td>
-                            <td>Comando e Controle</td>
-                            <td>Encrypted Channel, Non-Standard Port</td>
-                        </tr>
-                        <tr>
-                            <td><strong>TA0008</strong></td>
-                            <td>Evasão de Defesa</td>
-                            <td>Indicator Removal, Disable DLP Tools</td>
-                        </tr>
-                    </tbody>
-                </table>
-                
-                <div class="warning-box">
-                    <h4 style="margin-top: 0;">⏱️ Tempo de Permanência (Dwell Time)</h4>
-                    <p>O tempo de permanência do atacante no sistema deve ser calculado para avaliar a extensão total do dano e o volume de dados vazados.</p>
-                    <p><strong>Média em ataques de exfiltração:</strong> 24 a 72 horas antes da detecção</p>
-                    <p><strong>Meta da UFRGS:</strong> Reduzir MTTD (Mean Time to Detect) para < 2 horas</p>
-                </div>
+                <h3>🔍 TÉCNICAS DE ANÁLISE FORENSE</h3>
+                <ul>
+                    <li><strong>Live Forensics:</strong> Análise de memória RAM para malwares fileless</li>
+                    <li><strong>Timeline:</strong> Reconstrução do passo a passo do invasor</li>
+                    <li><strong>Movimentação Lateral:</strong> Verificação de conexões SMB, RDP, SSH entre servidores</li>
+                    <li><strong>MITRE ATT&CK:</strong> Mapeamento das táticas TA0010 (Exfiltração) e TA0011 (C2)</li>
+                </ul>
             </div>
         </div>
 
@@ -977,95 +1086,72 @@
         <div id="fase4" class="content-card">
             <div class="phase-title">
                 <h2 style="color: #E0493E">Fase 4: Contenção</h2>
-                <span class="badge" style="background-color: #E0493E;">Estancar o Vazamento</span>
+                <span class="badge" style="background-color: #E0493E;">CAIXA: MEDIDAS DE IMPACTO</span>
             </div>
-            <p>A gravidade do vazamento deve ser classificada com base na <strong>sensibilidade dos dados expostos</strong> e no nível de privilégio obtido pelo invasor. Caso o incidente seja classificado como <strong>CRÍTICO</strong> (ex: exfiltração de dados do SEI, Moodle ou folha de pagamento), as ações de contenção devem ser imediatas para interromper a fuga de informações.</p>
+            <p>Ações imediatas para interromper a fuga de informações e prevenir danos adicionais.</p>
+            
+            <div class="checklist-container">
+                <div class="checklist-header">
+                    <i class="fas fa-clipboard-check" style="font-size: 24px; color: #E0493E;"></i>
+                    <h4>CHECKLIST OPERACIONAL - CONTENÇÃO</h4>
+                </div>
+                
+                <!-- Isolamento Lógico -->
+                <div class="checklist-item">
+                    <div class="checklist-task">
+                        <strong>🔌 Isolamento Lógico:</strong> Colocar o host em quarentena ou bloquear tráfego de saída.
+                    </div>
+                    <div class="checklist-options">
+                        <label class="radio-option radio-yes">
+                            <input type="radio" name="cont1" value="sim"> <span class="radio-label">SIM</span>
+                        </label>
+                        <label class="radio-option radio-no">
+                            <input type="radio" name="cont1" value="nao"> <span class="radio-label">NÃO</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Preservar Estado -->
+                <div class="checklist-item">
+                    <div class="checklist-task">
+                        <strong>💾 Preservar Estado:</strong> Evitar o reboot do servidor para manter dados voláteis.
+                    </div>
+                    <div class="checklist-options">
+                        <label class="radio-option radio-yes">
+                            <input type="radio" name="cont2" value="sim"> <span class="radio-label">SIM</span>
+                        </label>
+                        <label class="radio-option radio-no">
+                            <input type="radio" name="cont2" value="nao"> <span class="radio-label">NÃO</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Notificar Partes Envolvidas -->
+                <div class="checklist-item" style="background: #f3e5f5;">
+                    <div class="checklist-task">
+                        <strong>📢 Notificar Partes Envolvidas:</strong> Informar CPD, Reitoria e DPO (avaliação LGPD).
+                    </div>
+                    <div class="checklist-options">
+                        <label class="radio-option radio-yes">
+                            <input type="radio" name="cont3" value="sim"> <span class="radio-label">SIM</span>
+                        </label>
+                        <label class="radio-option radio-no">
+                            <input type="radio" name="cont3" value="nao"> <span class="radio-label">NÃO</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
             
             <button class="btn-details" onclick="toggleDetails('d4')">
-                <i class="fas fa-shield-virus"></i> VER CLASSIFICAÇÃO E AÇÕES
+                <i class="fas fa-shield-virus"></i> VER ESTRATÉGIAS DE ISOLAMENTO
             </button>
             <div id="d4" class="extra-info">
-                <h3>📊 CLASSIFICAÇÃO DE VAZAMENTO E RESPOSTA</h3>
-                
-                <table class="tabela-evidencias">
-                    <thead>
-                        <tr>
-                            <th width="40%">CRITÉRIOS</th>
-                            <th width="15%">TEMPO DE REAÇÃO</th>
-                            <th width="45%">AÇÕES IMEDIATAS</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Exfiltração ativa de dados sensíveis ou acesso Root confirmado</strong></td>
-                            <td style="text-align: center; font-weight: bold; color: #d32f2f;">Imediato<br>(Minutos)</td>
-                            <td>
-                                Isolar o servidor da rede (Quarentena); suspender contas e rotas de saída.
-                                <div class="destaque-tabela">
-                                    Prioridade máxima: Estancar hemorragia de dados
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>Web Shell detectada ou tentativa de escalonamento de privilégios</strong></td>
-                            <td style="text-align: center; font-weight: bold; color: #f57c00;">Até 30 Minutos</td>
-                            <td>
-                                Bloquear IPs externos atacantes no Firewall; reset de credenciais.
-                                <div class="destaque-tabela">
-                                    Impedir controle remoto e exfiltração
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>Atividade de exfiltração em baixa velocidade ou Malware em /tmp</strong></td>
-                            <td style="text-align: center; font-weight: bold; color: #ffb300;">Até 2 Horas</td>
-                            <td>
-                                Encerrar processos maliciosos; isolar diretórios de escrita de dados.
-                                <div class="destaque-tabela">
-                                    Evitar vazamento silencioso contínuo
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>Tentativas de Brute Force constantes com logins suspeitos</strong></td>
-                            <td style="text-align: center; font-weight: bold; color: #388e3c;">Até 4 Horas</td>
-                            <td>
-                                Atualizar listas de bloqueio; fortalecer políticas de senha/MFA.
-                                <div class="destaque-tabela">
-                                    Prevenção de acesso não autorizado
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                
-                <h3>🚧 ESTRATÉGIAS DE ISOLAMENTO</h3>
-                
-                <div class="grid-container">
-                    <div class="grid-item" style="border-left: 4px solid #2196F3;">
-                        <h4>Isolamento Lógico</h4>
-                        <p>VLAN de Quarentena, ACLs de Firewall restritivas</p>
-                        <p><strong>Vantagem:</strong> Mantém servidor online para análise forense</p>
-                    </div>
-                    
-                    <div class="grid-item" style="border-left: 4px solid #FF9800;">
-                        <h4>Isolamento Físico</h4>
-                        <p>Desconexão de cabo, desativação de porta no switch</p>
-                        <p><strong>Vantagem:</strong> Contenção 100% eficaz imediata</p>
-                    </div>
-                    
-                    <div class="grid-item" style="border-left: 4px solid #9C27B0;">
-                        <h4>Isolamento de Aplicação</h4>
-                        <p>Parada apenas do serviço comprometido</p>
-                        <p><strong>Vantagem:</strong> Minimiza impacto nos negócios</p>
-                    </div>
-                </div>
-                
-                <div class="warning-box">
-                    <h4 style="margin-top: 0;">⚠️ IMPORTANTE: Preservação de Evidências</h4>
-                    <p>Durante a contenção, a equipe deve <strong>evitar alterações drásticas que possam impedir a coleta de logs forenses</strong>. Sempre que possível, colete evidências voláteis antes do isolamento completo.</p>
-                    <p><strong>Evidências voláteis:</strong> Memória RAM, conexões ativas, processos em execução.</p>
-                </div>
+                <h3>🚧 ESTRATÉGIAS DE CONTENÇÃO</h3>
+                <ul>
+                    <li><strong>Isolamento Lógico:</strong> VLAN de Quarentena, ACLs restritivas</li>
+                    <li><strong>Isolamento Físico:</strong> Desconexão de cabo, desativação de porta no switch</li>
+                    <li><strong>Isolamento de Aplicação:</strong> Parada apenas do serviço comprometido</li>
+                </ul>
             </div>
         </div>
 
@@ -1073,238 +1159,232 @@
         <div id="fase5" class="content-card">
             <div class="phase-title">
                 <h2 style="color: var(--blue)">Fase 5: Erradicação</h2>
-                <span class="badge" style="background-color: var(--blue);">Remoção Completa</span>
+                <span class="badge" style="background-color: var(--blue);">CAIXA: SOLUÇÃO</span>
             </div>
-            <p>Inicia-se a <strong>remoção completa de todos os artefatos maliciosos</strong>, contas ilegítimas e a correção das vulnerabilidades que permitiram a exfiltração de dados dos servidores da universidade.</p>
+            <p>Remoção completa de todos os artefatos maliciosos e correção das vulnerabilidades.</p>
             
-            <button class="btn-details" onclick="toggleDetails('d5')">
-                <i class="fas fa-broom"></i> VER PROCEDIMENTOS DE ERRADICAÇÃO
-            </button>
-            <div id="d5" class="extra-info">
-                <h3>🗑️ ELIMINAÇÃO DE PONTOS DE EXPOSIÇÃO ATIVA</h3>
+            <div class="checklist-container">
+                <div class="checklist-header">
+                    <i class="fas fa-clipboard-check" style="font-size: 24px; color: var(--blue);"></i>
+                    <h4>CHECKLIST OPERACIONAL - ERRADICAÇÃO</h4>
+                </div>
                 
-                <table class="tabela-evidencias">
-                    <thead>
-                        <tr>
-                            <th width="25%">OBJETIVO DA AÇÃO</th>
-                            <th width="55%">PROCEDIMENTOS DA ERRADICAÇÃO</th>
-                            <th width="20%">RESPONSÁVEL</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Remover Acesso do Invasor</strong></td>
-                            <td>Excluir Web Shells e encerrar conexões de exfiltração ativas (C2)</td>
-                            <td>Administradores de TI</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Retomar Soberania de Dados</strong></td>
-                            <td>Deletar usuários clandestinos e revogar chaves SSH/Tokens de API</td>
-                            <td>Segurança da Informação</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Fechar a Brecha de Segurança</strong></td>
-                            <td>Atualizar sistemas (Patching) e corrigir vulnerabilidades de código</td>
-                            <td>Gestor do Sistema</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Sanear a Identidade</strong></td>
-                            <td>Resetar senhas e chaves de acesso de serviços e usuários afetados</td>
-                            <td>Identidade e Acesso</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Limpar a Rede Interna</strong></td>
-                            <td>Escanear servidores adjacentes em busca de rastros de dados exfiltrados</td>
-                            <td>Suporte Técnico</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <!-- Remover Artefatos -->
+                <div class="checklist-item">
+                    <div class="checklist-task">
+                        <strong>🗑️ Remover Artefatos:</strong> Deletar Web Shells e malwares.
+                    </div>
+                    <div class="checklist-options">
+                        <label class="radio-option radio-yes">
+                            <input type="radio" name="erra1" value="sim"> <span class="radio-label">SIM</span>
+                        </label>
+                        <label class="radio-option radio-no">
+                            <input type="radio" name="erra1" value="nao"> <span class="radio-label">NÃO</span>
+                        </label>
+                    </div>
+                </div>
                 
-                <h3>🔧 CORREÇÃO DE VULNERABILIDADES E HARDENING</h3>
-                <ul>
-                    <li><strong>Sanear o Vetor de Entrada:</strong> Aplicar patches de segurança críticos (CVEs) em softwares que serviram de porta para o vazamento</li>
-                    <li><strong>Reset de Credenciais:</strong> Forçar a troca de senhas de todas as contas cujos dados foram acessados ou capturados</li>
-                    <li><strong>Reforço de Configuração:</strong> Revisar permissões de arquivos e base de dados, limitando acessos de leitura e escrita</li>
-                    <li><strong>Implementação de MFA:</strong> Garantir que a brecha não possa ser reutilizada</li>
-                </ul>
+                <!-- Retomar Soberania -->
+                <div class="checklist-item">
+                    <div class="checklist-task">
+                        <strong>🔑 Retomar Soberania:</strong> Revogar chaves SSH, tokens e deletar contas clandestinas.
+                    </div>
+                    <div class="checklist-options">
+                        <label class="radio-option radio-yes">
+                            <input type="radio" name="erra2" value="sim"> <span class="radio-label">SIM</span>
+                        </label>
+                        <label class="radio-option radio-no">
+                            <input type="radio" name="erra2" value="nao"> <span class="radio-label">NÃO</span>
+                        </label>
+                    </div>
+                </div>
                 
-                <div class="info-box">
-                    <h4 style="margin-top: 0;">✅ VALIDAÇÃO PÓS-ERRADICAÇÃO</h4>
-                    <p>Confirmar a remoção de arquivos maliciosos, validar o reset de contas com MFA ativo e garantir, via logs, que o servidor não tenta mais conexões externas suspeitas.</p>
+                <!-- Reset de Identidade -->
+                <div class="checklist-item">
+                    <div class="checklist-task">
+                        <strong>🔄 Reset de Identidade:</strong> Forçar a troca de senhas das contas afetadas.
+                    </div>
+                    <div class="checklist-options">
+                        <label class="radio-option radio-yes">
+                            <input type="radio" name="erra3" value="sim"> <span class="radio-label">SIM</span>
+                        </label>
+                        <label class="radio-option radio-no">
+                            <input type="radio" name="erra3" value="nao"> <span class="radio-label">NÃO</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Fechar a Brecha -->
+                <div class="checklist-item">
+                    <div class="checklist-task">
+                        <strong>🔧 Fechar a Brecha:</strong> Aplicar patches e corrigir configurações exploradas.
+                    </div>
+                    <div class="checklist-options">
+                        <label class="radio-option radio-yes">
+                            <input type="radio" name="erra4" value="sim"> <span class="radio-label">SIM</span>
+                        </label>
+                        <label class="radio-option radio-no">
+                            <input type="radio" name="erra4" value="nao"> <span class="radio-label">NÃO</span>
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- FASE 6: RECUPERAÇÃO -->
+        <!-- FASE 6: RECUPERAÇÃO E VALIDAÇÃO -->
         <div id="fase6" class="content-card">
             <div class="phase-title">
-                <h2 style="color: var(--purple)">Fase 6: Recuperação</h2>
-                <span class="badge" style="background-color: var(--purple);">Restauração Segura</span>
+                <h2 style="color: var(--purple)">Fase 6: Recuperação e Validação</h2>
+                <span class="badge" style="background-color: var(--purple);">RETOMADA SEGURA</span>
             </div>
-            <p>A recuperação foca em <strong>restabelecer a integridade dos dados</strong> e a disponibilidade dos sistemas, garantindo que o retorno ocorra de forma segura, impedindo que acessos remanescentes permitam novo vazamento.</p>
+            <p>Restabelecimento da integridade dos sistemas com validação rigorosa.</p>
             
-            <button class="btn-details" onclick="toggleDetails('d6')">
-                <i class="fas fa-sync-alt"></i> VER TESTES DE VALIDAÇÃO
-            </button>
-            <div id="d6" class="extra-info">
-                <h3>🧪 TESTES DE VALIDAÇÃO PÓS-VAZAMENTO</h3>
+            <div class="checklist-container">
+                <div class="checklist-header">
+                    <i class="fas fa-clipboard-check" style="font-size: 24px; color: var(--purple);"></i>
+                    <h4>CHECKLIST OPERACIONAL - RECUPERAÇÃO E VALIDAÇÃO</h4>
+                </div>
                 
-                <table class="tabela-evidencias">
-                    <thead>
-                        <tr>
-                            <th width="20%">TESTE</th>
-                            <th width="35%">OBJETIVO</th>
-                            <th width="35%">CRITÉRIO DE APROVAÇÃO</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Scan de Vulnerabilidade</strong></td>
-                            <td>Verificar se a falha que gerou o vazamento foi corrigida</td>
-                            <td>Relatório sem vulnerabilidades críticas</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Integridade de Dados</strong></td>
-                            <td>Confirmar que as bases de dados não foram corrompidas no ataque</td>
-                            <td>Hashes e volumetria coincidem com o original</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Auditoria de Acessos</strong></td>
-                            <td>Validar que apenas usuários legítimos acessam dados sensíveis</td>
-                            <td>100% dos usuários autorizados pelo CPD</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Teste de Exfiltração</strong></td>
-                            <td>Simular a técnica do invasor para testar a nova defesa (DLP/WAF)</td>
-                            <td>Tentativa de extração bloqueada pelo sistema</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Validação de MFA</strong></td>
-                            <td>Garantir que o segundo fator é obrigatório para todos os acessos</td>
-                            <td>Acesso negado sem o token de verificação</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Análise de Conexões Outbound</strong></td>
-                            <td>Monitorar se o servidor tenta enviar dados para o exterior</td>
-                            <td>Ausência de conexões externas não catalogadas</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <!-- Sanitização de Backups -->
+                <div class="checklist-item">
+                    <div class="checklist-task">
+                        <strong>💿 Sanitização de Backups:</strong> Restaurar de fontes limpas e seguras.
+                    </div>
+                    <div class="checklist-options">
+                        <label class="radio-option radio-yes">
+                            <input type="radio" name="rec1" value="sim"> <span class="radio-label">SIM</span>
+                        </label>
+                        <label class="radio-option radio-no">
+                            <input type="radio" name="rec1" value="nao"> <span class="radio-label">NÃO</span>
+                        </label>
+                    </div>
+                </div>
                 
-                <h3>🔄 RESTAURAÇÃO DE CONTROLES</h3>
-                <ul>
-                    <li><strong>Sanitização de Backups:</strong> Restaurar sistemas a partir de backups limpos, realizando varredura imediata pós-restauro</li>
-                    <li><strong>Reconfiguração de Acessos:</strong> Refinar regras de Firewall/WAF baseadas nos padrões observados no vazamento</li>
-                    <li><strong>Alertas de Integridade:</strong> Ativar monitoramento de arquivos (FIM) para detectar alterações em arquivos sensíveis</li>
-                    <li><strong>Criptografia:</strong> Implementar criptografia para dados em repouso e em trânsito</li>
-                </ul>
+                <!-- Executar Testes -->
+                <div class="checklist-item" style="background: #e8f5e9;">
+                    <div class="checklist-task">
+                        <strong>🧪 Executar Testes:</strong>
+                        <ul style="margin: 5px 0 0 20px; color: #555;">
+                            <li>Realizar scan de vulnerabilidades e validar o MFA</li>
+                            <li>Monitorar conexões externas para detectar sinais de C2</li>
+                        </ul>
+                    </div>
+                    <div class="checklist-options">
+                        <label class="radio-option radio-yes">
+                            <input type="radio" name="rec2" value="sim"> <span class="radio-label">SIM</span>
+                        </label>
+                        <label class="radio-option radio-no">
+                            <input type="radio" name="rec2" value="nao"> <span class="radio-label">NÃO</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Registrar Hora da Solução -->
+                <div class="checklist-item">
+                    <div class="checklist-task">
+                        <strong>⏱️ Registrar a Hora da Solução:</strong> Momento do restabelecimento seguro.
+                    </div>
+                    <div class="checklist-options">
+                        <label class="radio-option radio-yes">
+                            <input type="radio" name="rec3" value="sim"> <span class="radio-label">SIM</span>
+                        </label>
+                        <label class="radio-option radio-no">
+                            <input type="radio" name="rec3" value="nao"> <span class="radio-label">NÃO</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="timestamp-field">
+                    <label><i class="fas fa-clock"></i> Hora da Solução:</label>
+                    <input type="datetime-local" id="recHoraSolucao">
+                </div>
             </div>
         </div>
 
-        <!-- FASE 7: PÓS-INCIDENTE -->
+        <!-- FASE 7: ATIVIDADES PÓS-INCIDENTE -->
         <div id="fase7" class="content-card">
             <div class="phase-title">
-                <h2 style="color: var(--info-blue)">Fase 7: Pós-Incidente</h2>
-                <span class="badge" style="background-color: var(--info-blue);">Lições Aprendidas</span>
+                <h2 style="color: var(--info-blue)">Fase 7: Atividades Pós-Incidente</h2>
+                <span class="badge" style="background-color: var(--info-blue);">CAIXA: FIM - TRIÂNGULO</span>
             </div>
-            <p>A análise pós-incidente foca em <strong>compreender a dinâmica da exfiltração</strong> para fortalecer a infraestrutura da UFRGS. É necessário identificar por que ferramentas como o DLP não detectaram a saída dos dados e como o atacante escalou privilégios.</p>
-           
-            <button class="btn-details" onclick="toggleDetails('d7')">
-                <i class="fas fa-chart-line"></i> VER ANÁLISE E MELHORIAS
-            </button>
-            <div id="d7" class="extra-info">
-                <h3>📝 DOCUMENTAÇÃO DO INCIDENTE</h3>
-                <p>Registrar a linha do tempo desde o primeiro indicador até a revogação total de acessos.</p>
+            <p>Análise crítica, documentação e aprimoramento contínuo.</p>
+            
+            <div class="checklist-container">
+                <div class="checklist-header">
+                    <i class="fas fa-clipboard-check" style="font-size: 24px; color: var(--info-blue);"></i>
+                    <h4>CHECKLIST OPERACIONAL - PÓS-INCIDENTE</h4>
+                </div>
                 
-                <table class="tabela-evidencias">
-                    <thead>
-                        <tr>
-                            <th>DATA/HORA</th>
-                            <th>EVENTO</th>
-                            <th>AÇÃO</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>DD/MM HH:MM</td>
-                            <td>Detecção inicial (alerta de exfiltração)</td>
-                            <td>Triagem e análise preliminar</td>
-                        </tr>
-                        <tr>
-                            <td>DD/MM HH:MM</td>
-                            <td>Confirmação do vazamento</td>
-                            <td>Acionamento do TRI e DPO</td>
-                        </tr>
-                        <tr>
-                            <td>DD/MM HH:MM</td>
-                            <td>Contenção aplicada</td>
-                            <td>Isolamento do servidor</td>
-                        </tr>
-                        <tr>
-                            <td>DD/MM HH:MM</td>
-                            <td>Erradicação concluída</td>
-                            <td>Remoção de backdoors</td>
-                        </tr>
-                        <tr>
-                            <td>DD/MM HH:MM</td>
-                            <td>Recuperação finalizada</td>
-                            <td>Sistema restaurado</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <!-- Calcular Métricas -->
+                <div class="checklist-item">
+                    <div class="checklist-task">
+                        <strong>📊 Calcular Métricas:</strong> Medir o tempo total de resposta e impacto institucional.
+                    </div>
+                    <div class="checklist-options">
+                        <label class="radio-option radio-yes">
+                            <input type="radio" name="pos1" value="sim"> <span class="radio-label">SIM</span>
+                        </label>
+                        <label class="radio-option radio-no">
+                            <input type="radio" name="pos1" value="nao"> <span class="radio-label">NÃO</span>
+                        </label>
+                    </div>
+                </div>
+                <div style="margin-top: 10px; padding: 10px; background: #e3f2fd; border-radius: 4px;">
+                    <strong>Tempo total de resposta:</strong> <input type="text" placeholder="Ex: 4h 30min" style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; width: 150px; margin-left: 10px;">
+                </div>
                 
-                <h3>🔍 IDENTIFICAR MELHORIAS</h3>
-                <div class="grid-container">
-                    <div class="grid-item">
-                        <h4>Falhas de Detecção</h4>
-                        <ul>
-                            <li>DLP não configurado para volume de saída?</li>
-                            <li>Thresholds de alerta muito altos?</li>
-                            <li>Logs não centralizados?</li>
-                        </ul>
+                <!-- Lições Aprendidas -->
+                <div class="checklist-item">
+                    <div class="checklist-task">
+                        <strong>📝 Lições Aprendidas:</strong> Identificar falhas nos controles e melhorias de hardening.
                     </div>
-                    
-                    <div class="grid-item">
-                        <h4>Falhas de Prevenção</h4>
-                        <ul>
-                            <li>Segmentação de rede falhou?</li>
-                            <li>MFA não implementado?</li>
-                            <li>Patches críticos pendentes?</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="grid-item">
-                        <h4>Falhas de Resposta</h4>
-                        <ul>
-                            <li>Tempo de detecção aceitável?</li>
-                            <li>Comunicação com DPO ágil?</li>
-                            <li>Playbook seguido corretamente?</li>
-                        </ul>
+                    <div class="checklist-options">
+                        <label class="radio-option radio-yes">
+                            <input type="radio" name="pos2" value="sim"> <span class="radio-label">SIM</span>
+                        </label>
+                        <label class="radio-option radio-no">
+                            <input type="radio" name="pos2" value="nao"> <span class="radio-label">NÃO</span>
+                        </label>
                     </div>
                 </div>
                 
-                <h3>🔄 ATUALIZAR PROCESSOS</h3>
-                <ul>
-                    <li>Revisar a gestão de patches e os critérios de alertas para capturar técnicas similares no futuro</li>
-                    <li>Fortalecer políticas de classificação de dados e controles de acesso (IAM)</li>
-                    <li>Incorporar lições aprendidas nos treinamentos da equipe</li>
-                    <li>Atualizar o playbook com novas táticas identificadas</li>
-                </ul>
-                
-                <div class="lgpd-box">
-                    <h4 style="margin-top: 0;">📋 CONFORMIDADE NORMATIVA</h4>
-                    <p>A adoção dos frameworks <strong>ISO/IEC 27001, 27701 (Privacidade) e NIST</strong> é estratégica para a UFRGS. O NIST SP 800-61r2 fornece o roteiro metodológico para evitar decisões improvisadas.</p>
-                    <p>Esta conformidade atua diretamente na mitigação de riscos jurídicos, alinhando a universidade aos requisitos da <strong>LGPD</strong>, preservando sua reputação institucional e garantindo o cumprimento das obrigações legais.</p>
+                <!-- Elaborar Relatório Final -->
+                <div class="checklist-item">
+                    <div class="checklist-task">
+                        <strong>📋 Elaborar Relatório Final:</strong> Documentar todo o ciclo para auditoria e conformidade.
+                    </div>
+                    <div class="checklist-options">
+                        <label class="radio-option radio-yes">
+                            <input type="radio" name="pos3" value="sim"> <span class="radio-label">SIM</span>
+                        </label>
+                        <label class="radio-option radio-no">
+                            <input type="radio" name="pos3" value="nao"> <span class="radio-label">NÃO</span>
+                        </label>
+                    </div>
                 </div>
                 
-                <div class="info-box">
-                    <h4 style="margin-top: 0;">🎯 OBJETIVO FINAL</h4>
-                    <p>Garantir que os dados e sistemas retornem a um estado seguro, que os controles sejam aprimorados e que a organização esteja mais resiliente e preparada para enfrentar futuros incidentes de comprometimento e vazamento de informações.</p>
+                <!-- Finalizar Processo -->
+                <div class="checklist-item" style="background: #c8e6c9;">
+                    <div class="checklist-task">
+                        <strong>🔺 Finalizar Processo:</strong> Emitir o sinal de conclusão (Triângulo).
+                    </div>
+                    <div class="checklist-options">
+                        <label class="radio-option radio-yes">
+                            <input type="radio" name="pos4" value="sim"> <span class="radio-label">SIM</span>
+                        </label>
+                        <label class="radio-option radio-no">
+                            <input type="radio" name="pos4" value="nao"> <span class="radio-label">NÃO</span>
+                        </label>
+                    </div>
                 </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <i class="fas fa-triangle" style="font-size: 40px; color: var(--info-blue);"></i>
+                <p style="font-weight: bold; color: var(--info-blue);">INCIDENTE FINALIZADO - TRIÂNGULO DE CONCLUSÃO</p>
             </div>
         </div>
 
-        <!-- ANEXOS (Card oculto, acessível via PDF) -->
+        <!-- ANEXOS -->
         <div id="anexos" class="content-card">
             <div class="phase-title">
                 <h2 style="color: var(--dark-blue)">ANEXOS DO PLAYBOOK</h2>
@@ -1313,18 +1393,15 @@
             
             <h3>Anexo A – Checklist de Informações Comprometidas</h3>
             <div style="background: #f9f9f9; padding: 20px; border-radius: 8px;">
-                <h4>Checklist Operacional para Resposta a Vazamento</h4>
+                <h4>Checklist Consolidado de Resposta a Vazamento</h4>
                 <ul style="list-style: none; padding-left: 0;">
-                    <li><input type="checkbox"> 1. Detecção e Triagem - Confirmar exfiltração de dados</li>
-                    <li><input type="checkbox"> 2. Acionamento - Comunicar TRI e DPO</li>
-                    <li><input type="checkbox"> 3. Preservação - Coletar logs e evidências voláteis</li>
-                    <li><input type="checkbox"> 4. Análise - Identificar dados comprometidos</li>
-                    <li><input type="checkbox"> 5. Contenção - Isolar servidor e bloquear exfiltração</li>
-                    <li><input type="checkbox"> 6. Erradicação - Remover backdoors e corrigir falhas</li>
-                    <li><input type="checkbox"> 7. Recuperação - Restaurar de backup limpo</li>
-                    <li><input type="checkbox"> 8. Notificação - Comunicar ANPD e titulares (LGPD)</li>
-                    <li><input type="checkbox"> 9. Documentação - Registrar lições aprendidas</li>
-                    <li><input type="checkbox"> 10. Melhoria - Atualizar controles e políticas</li>
+                    <li style="margin-bottom: 10px;"><input type="checkbox"> 1. Preparação (Antes do Incidente) - Hardening, EDR, MFA, Backups</li>
+                    <li style="margin-bottom: 10px;"><input type="checkbox"> 2. Detecção e Triagem - Hora da detecção, confirmação, classificação</li>
+                    <li style="margin-bottom: 10px;"><input type="checkbox"> 3. Análise e Investigação - Paciente Zero, evidências, movimentação lateral</li>
+                    <li style="margin-bottom: 10px;"><input type="checkbox"> 4. Contenção - Isolamento, preservação, notificação DPO</li>
+                    <li style="margin-bottom: 10px;"><input type="checkbox"> 5. Erradicação - Remoção de artefatos, reset de identidade, patches</li>
+                    <li style="margin-bottom: 10px;"><input type="checkbox"> 6. Recuperação e Validação - Backups, testes, hora da solução</li>
+                    <li style="margin-bottom: 10px;"><input type="checkbox"> 7. Pós-Incidente - Métricas, lições aprendidas, relatório final</li>
                 </ul>
             </div>
             
@@ -1374,16 +1451,6 @@
                 <p><strong>Notificação ANPD:</strong> ( ) Sim ( ) Não</p>
                 <p><strong>Notificação Titulares:</strong> ( ) Sim ( ) Não</p>
             </div>
-            
-            <h3>Anexo D – Referências e Frameworks</h3>
-            <ul>
-                <li><strong>NIST SP 800-61r2:</strong> Guia de Tratamento de Incidentes</li>
-                <li><strong>ISO/IEC 27001:</strong> Sistema de Gestão de Segurança da Informação</li>
-                <li><strong>ISO/IEC 27701:</strong> Extensão para Privacidade (LGPD)</li>
-                <li><strong>MITRE ATT&CK:</strong> Táticas TA0010 (Exfiltração) e TA0011 (C2)</li>
-                <li><strong>LGPD:</strong> Lei nº 13.709/2018</li>
-                <li><strong>CIS Controls:</strong> Controle 03 - Proteção de Dados</li>
-            </ul>
         </div>
     </div>
 
@@ -1448,18 +1515,18 @@
             }
         }
 
-        // Função de download PDF (simplificada - mesma lógica do original)
+        // Função de download PDF
         function downloadPDF(fase) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             
             const faseNomes = {
                 'fase1': '1_Preparacao',
-                'fase2': '2_Detecao',
-                'fase3': '3_Analise',
+                'fase2': '2_Detecao_Triagem',
+                'fase3': '3_Analise_Investigacao',
                 'fase4': '4_Contencao',
                 'fase5': '5_Erradicacao',
-                'fase6': '6_Recuperacao',
+                'fase6': '6_Recuperacao_Validacao',
                 'fase7': '7_Pos_Incidente',
                 'completo': 'Playbook_Completo',
                 'anexos': 'Anexos'
