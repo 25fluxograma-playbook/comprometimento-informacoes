@@ -3,336 +3,1494 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Playbook de Resposta a Incidentes - NIST</title>
+    <title>Vazamento de Informações - Plano de Resposta a Incidentes UFRGS</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Bibliotecas para geração de PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <style>
         :root {
             --dark-blue: #000066; 
-            --nist-detect: #e1f5fe;
-            --nist-analyze: #b3e5fc; 
-            --nist-contain: #fff9c4;
-            --nist-eradicate: #FF3333;
-            --nist-recover: #0055aa;
-            --nist-post: #0055aa;
-            --red-alert: #cc0000;
-            --orange-alert: #ff8c00;
+            --red: #E0493E;
+            --orange: #DB832B;
+            --blue: #6666FF;
+            --green: #28CC28;
+            --purple: #8A2BE2;
             --gray-panel: #00001f;
+            --table: #0d234f;
+            --yellow: #FFC107;
+            --dark-red: #da0505;
+            --info-blue: #2196F3;
+            --lgpd-purple: #6f42c1;
         }
 
         body {
             font-family: 'Roboto', sans-serif;
             margin: 0;
-            background-color: var(--dark-blue);
+            background: linear-gradient(135deg, var(--dark-blue) 0%, #000044 100%);
             color: white;
-            display: flex;
+            display: flex; 
             flex-direction: column;
-            height: 100vh;
+            height: 100vh; 
             overflow: hidden;
         }
 
-        .menu-btn { position: fixed; top: 25px; right: 25px; font-size: 28px; cursor: pointer; z-index: 1000; }
-        .side-menu { height: 100%; width: 0; position: fixed; z-index: 999; top: 0; right: 0; background-color: #00001f; overflow-x: hidden; transition: 0.4s; padding-top: 60px; }
-        .side-menu a { padding: 15px 30px; text-decoration: none; font-size: 18px; color: #ccc; display: block; font-family: 'Roboto', sans-serif; }
+        /* Menu Hamburguer para PDF */
+        .pdf-menu {
+            position: fixed;
+            right: 20px;
+            top: 25px;
+            z-index: 1000;
+        }
 
-        .viewport { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 20px; overflow-y: auto; }
-        .header-title { text-align: center; margin-bottom: 20px; text-transform: uppercase; }
+        .pdf-toggle {
+            background-color: var(--red);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: 0.3s;
+            border: none;
+        }
 
-        .content-card {
+        .pdf-toggle:hover {
+            transform: scale(1.1);
+            background-color: var(--orange);
+        }
+
+        .pdf-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 60px;
             background: white;
             border-radius: 8px;
+            min-width: 250px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            z-index: 1001;
+        }
+
+        .pdf-dropdown.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .pdf-item {
+            display: block;
+            padding: 15px 20px;
+            color: #333;
+            text-decoration: none;
+            border-bottom: 1px solid #eee;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+
+        .pdf-item:hover {
+            background-color: #f5f5f5;
+            color: var(--dark-blue);
+        }
+
+        .pdf-item i {
+            margin-right: 10px;
+            color: var(--red);
+        }
+
+        /* Botão de voltar */
+        .back-btn {
+            position: fixed;
+            left: 90px;
+            top: 25px;
+            background-color: var(--orange);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: 0.3s;
+            border: none;
+            z-index: 1000;
+            display: none;
+        }
+
+        .back-btn:hover {
+            transform: scale(1.1);
+            background-color: var(--green);
+        }
+
+        .back-btn.show {
+            display: flex;
+        }
+
+        /* Botão DPO e LGPD */
+        .lgpd-trigger {
+            position: fixed; 
+            left: 20px; 
+            top: 25px;
+            background-color: var(--lgpd-purple); 
+            color: white;
+            width: 50px; 
+            height: 50px; 
+            border-radius: 50%;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            font-size: 24px; 
+            cursor: pointer; 
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
+            transition: 0.3s;
+            border: none;
+        }
+        .lgpd-trigger:hover { 
+            transform: scale(1.1); 
+            background-color: var(--dark-blue); 
+        }
+
+        .lgpd-modal {
+            display: none; 
+            position: fixed; 
+            z-index: 2000;
+            left: 0; 
+            top: 0; 
+            width: 100%; 
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            justify-content: center; 
+            align-items: center;
+        }
+        .lgpd-content {
+            background: white; 
+            padding: 25px; 
+            border-radius: 8px;
+            width: 85%; 
+            max-width: 900px; 
+            max-height: 90%;
+            text-align: center; 
+            position: relative; 
+            overflow-y: auto; 
+            color: black;
+        }
+        .lgpd-content h2 { 
+            color: var(--dark-blue); 
+            margin-bottom: 20px; 
+        }
+        .lgpd-description { 
+            text-align: left; 
+            background: #f8f9fa; 
+            padding: 20px; 
+            border-left: 5px solid var(--lgpd-purple); 
+            border-radius: 0 8px 8px 0;
+        }
+
+        /* Navegação e Cards */
+        .viewport { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 20px; 
+            overflow-y: auto; 
+            margin-top: 20px;
+        }
+        .content-card {
+            background: white; 
+            border-radius: 8px; 
             padding: 30px;
-            width: 90%;
-            max-width: 1200px;
+            width: 90%; 
+            max-width: 1200px; 
             color: black;
             display: none; 
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.603);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
             margin-bottom: 50px;
+            position: relative;
+        }
+        .content-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--dark-blue), var(--red), var(--orange));
+            border-radius: 8px 8px 0 0;
+        }
+        .active { 
+            display: block; 
+            animation: fadeIn 0.5s ease;
         }
 
-        .active { display: block; }
+        .nav-bar { 
+            background: linear-gradient(90deg, #00001f, #000033); 
+            display: flex; 
+            padding: 12px; 
+            gap: 8px; 
+            justify-content: center; 
+            border-top: 2px solid #00001f; 
+            position: relative;
+            z-index: 999;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
+        }
+        .nav-btn { 
+            flex: 1; 
+            max-width: 160px; 
+            padding: 14px 2px; 
+            border: none; 
+            border-radius: 4px;
+            font-weight: 700; 
+            cursor: pointer; 
+            font-size: 11px; 
+            text-transform: uppercase; 
+            color: white; 
+            transition: 0.3s; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+        }
+        
+        .c1 { background: linear-gradient(135deg, var(--green), #1e7e34); }
+        .c2 { background: linear-gradient(135deg, var(--orange), #b5651e); }
+        .c3 { background: linear-gradient(135deg, var(--red), #a02c24); }
+        .c4 { background: linear-gradient(135deg, #E0493E, #b03a30); }
+        .c5 { background: linear-gradient(135deg, var(--blue), #4a4ad9); }
+        .c6 { background: linear-gradient(135deg, var(--purple), #6a1b9a); }
+        .c7 { background: linear-gradient(135deg, var(--info-blue), #0d47a1); }
 
-        .img-container { width: 100%; text-align: center; margin-bottom: 20px; }
-        .img-container img { max-width: 100%; border: 1px solid #ddd; border-radius: 4px; }
-
-        .btn-details {
-            display: block;
-            margin: 20px auto;
-            padding: 15px 40px;
-            background-color: #222;
+        .img-container { 
+            width: 90%; 
+            text-align: center; 
+            margin-bottom: 20px; 
+            background: #f5f5f5; 
+            padding: 20px; 
+            border-radius: 8px; 
+            border: 1px solid #ddd;
+        }
+        .img-container img { 
+            max-width: 100%; 
+            height: auto; 
+            border-radius: px;
+        }
+        
+        .btn-details { 
+            padding: 12px 24px; 
+            background: linear-gradient(135deg, var(--dark-blue), #000044); 
+            color: white; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            margin: 15px 5px 5px 0; 
+            font-weight: bold; 
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-details:hover {
+            background: linear-gradient(135deg, var(--red), #b03a30);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .extra-info { 
+            display: none; 
+            margin-top: 25px; 
+            border-top: 2px solid #eee; 
+            padding-top: 25px; 
+            text-align: left; 
+            animation: fadeIn 0.4s ease;
+        }
+        
+        /* ESTILOS PARA TABELAS */
+        .tabela-evidencias {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 0.95em;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .tabela-evidencias thead tr {
+            background: linear-gradient(135deg, var(--table), #1a2c4e);
             color: white;
+        }
+        
+        .tabela-evidencias th {
+            padding: 18px 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95em;
             border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 16px;
             text-transform: uppercase;
-            font-family: 'Roboto', sans-serif;
+            letter-spacing: 0.5px;
         }
-
-        .extra-info { display: none; margin-top: 30px; border-top: 2px solid #eee; padding-top: 20px; animation: fadeIn 0.5s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .info-section { margin-bottom: 25px; }
-        .info-section h3 { border-left: 5px solid var(--dark-blue); padding-left: 10px; margin-bottom: 12px; color: #333; font-weight: 700; }
-
-        /* Estilo para ferramentas de mitigação */
-        .mitigation-tools {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 15px;
+        
+        .tabela-evidencias tbody tr {
+            border-bottom: 1px solid #e0e0e0;
+            transition: all 0.2s ease;
         }
-        .tool-badge {
-            background: #f0f0f0;
-            border: 1px solid #ccc;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.85em;
-            font-weight: 500;
+        
+        .tabela-evidencias tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .tabela-evidencias tbody tr:hover {
+            background-color: #e8f4ff;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .tabela-evidencias td {
+            padding: 16px 15px;
+            vertical-align: top;
+            border: none;
+        }
+        
+        .tabela-evidencias td:first-child {
+            font-weight: 600;
+            color: var(--dark-blue);
+            border-right: 2px solid #e0e0e0;
+            background-color: rgba(0,0,102,0.02);
+        }
+        
+        .tabela-evidencias td:last-child {
             color: #555;
         }
-
-        .steps-guide { background: #f9f9f9; padding: 15px; border-radius: 5px; border: 1px solid #eee; }
-        .steps-guide dt { font-weight: 700; color: #222; margin-top: 12px; }
-        .steps-guide dd { margin-bottom: 8px; margin-left: 20px; font-size: 0.95em; line-height: 1.5; color: #444; }
-
-        .nav-bar { background-color: var(--gray-panel); display: flex; padding: 10px; gap: 5px; justify-content: center; border-top: 2px solid #00001f; }
-        .nav-btn { flex: 1; max-width: 160px; padding: 12px 2px; border: 2px solid #00001f; font-weight: 700; cursor: pointer; text-align: center; font-size: 10px; font-family: 'Roboto', sans-serif; transition: 0.3s; }
         
-        .c-deteccao { background-color: #FF8000; color: white; }
-        .c-analise { background-color: #FF8000; color: white; }
-        .c-contencao { background-color: #FF3333; color: rgb(255, 255, 255); }
-        .c-erradicacao { background-color: var(--nist-eradicate); color: white; }
-        .c-recuperacao { background-color: var(--nist-recover); color: white; }
-        .c-pos { background-color: var(--nist-post); color: white; }
+        .destaque-tabela {
+            background-color: #fff8e1;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 8px;
+            border-left: 4px solid #ffb300;
+            font-size: 0.9em;
+        }
+        
+        @keyframes fadeIn { 
+            from { 
+                opacity: 0; 
+                transform: translateY(10px); 
+            } 
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            } 
+        }
 
-        .badge { font-size: 0.75em; padding: 2px 8px; border-radius: 12px; color: white; margin-left: 5px; font-weight: 500; }
-        .bg-alto { background: var(--red-alert); }
-        .bg-medio { background: var(--orange-alert); }
+        .phase-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+
+        h2 {
+            margin: 0;
+            font-weight: 600;
+        }
+        
+        h3 {
+            color: var(--dark-blue);
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+        }
+        
+        h4 {
+            color: #333;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75em;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: white;
+        }
+        
+        .badge-critical { background-color: var(--dark-red); }
+        .badge-high { background-color: var(--red); }
+        .badge-medium { background-color: var(--orange); }
+        .badge-low { background-color: var(--green); }
+        
+        .info-box {
+            background-color: #e3f2fd;
+            border-left: 5px solid var(--info-blue);
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+        }
+        
+        .warning-box {
+            background-color: #fff3e0;
+            border-left: 5px solid var(--orange);
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+        }
+        
+        .lgpd-box {
+            background-color: #f3e5f5;
+            border-left: 5px solid var(--lgpd-purple);
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+        }
+        
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .grid-item {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            transition: 0.3s;
+        }
+        
+        .grid-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-color: var(--blue);
+        }
+        
+        .grid-item h5 {
+            color: var(--dark-blue);
+            margin-top: 0;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        
+        .status-pending { background-color: #FF9800; color: white; }
+        .status-scheduled { background-color: #2196F3; color: white; }
+        .status-completed { background-color: #4CAF50; color: white; }
+        
+        @media (max-width: 768px) {
+            .tabela-evidencias {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            
+            .tabela-evidencias th,
+            .tabela-evidencias td {
+                min-width: 250px;
+            }
+            
+            .nav-btn {
+                font-size: 8px;
+                padding: 10px 1px;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <div class="menu-btn" onclick="toggleMenu()"><i class="fas fa-bars"></i></div>
+    <!-- Botão LGPD/DPO -->
+    <div class="lgpd-trigger" onclick="toggleLGPD()"><i class="fas fa-shield-alt"></i></div>
+    
+    <!-- Botão de voltar -->
+    <button class="back-btn" onclick="showPrincipal()" id="backButton">
+        <i class="fas fa-arrow-left"></i>
+    </button>
 
-    <div id="sideMenu" class="side-menu">
-        <a href="#" onclick="showPhase('principal')"><i class="fas fa-home"></i> Início</a>
-        <hr style="border-color: #333; margin: 10px 20px;">
-        <a href="documentos/fluxograma_completo.pdf" download="Fluxograma_NIST.pdf">
-            <i class="fas fa-file-pdf" style="color: #ff4d4d;"></i> Baixar Geral (PDF)
-        </a>
+    <!-- Modal LGPD e Conformidade -->
+    <div id="lgpdModal" class="lgpd-modal" onclick="toggleLGPD()">
+        <div class="lgpd-content" onclick="event.stopPropagation()">
+            <h2><i class="fas fa-balance-scale" style="color: var(--lgpd-purple);"></i> Conformidade LGPD e Obrigações Legais</h2>
+            <div class="lgpd-description">
+                <h3 style="color: var(--lgpd-purple); margin-top: 0;">Lei nº 13.709/2018 - Lei Geral de Proteção de Dados</h3>
+                
+                <p><strong>Obrigações da UFRGS em caso de vazamento:</strong></p>
+                <ul>
+                    <li><strong>Comunicação à ANPD:</strong> O encarregado (DPO) deve comunicar à Autoridade Nacional de Proteção de Dados em prazo razoável, conforme determinação da ANPD.</li>
+                    <li><strong>Comunicação aos titulares:</strong> Os titulares dos dados pessoais afetados devem ser informados sobre o incidente, com descrição clara da natureza dos dados comprometidos.</li>
+                    <li><strong>Riscos e medidas:</strong> Informar sobre os riscos relacionados ao incidente e as medidas de segurança adotadas para proteção dos dados.</li>
+                </ul>
+                
+                <p><strong>Responsabilidades do DPO (Encarregado de Dados):</strong></p>
+                <ul>
+                    <li>Receber e responder reclamações e comunicações dos titulares</li>
+                    <li>Receber comunicações da ANPD</li>
+                    <li>Orientar funcionários sobre práticas de proteção de dados</li>
+                    <li>Coordenar a resposta a incidentes de vazamento</li>
+                    <li>Manter registro das operações de tratamento de dados pessoais</li>
+                </ul>
+                
+                <p><strong>Sanções administrativas:</strong></p>
+                <ul>
+                    <li>Advertência e prazo para adoção de medidas corretivas</li>
+                    <li>Multa simples de até 2% do faturamento (limitada a R$ 50 milhões por infração)</li>
+                    <li>Publicização da infração após devidamente apurada</li>
+                    <li>Bloqueio ou eliminação dos dados pessoais a que se refere a infração</li>
+                </ul>
+                
+                <div style="background-color: #d1e7dd; padding: 15px; border-radius: 5px; margin-top: 15px;">
+                    <strong>Time de Resposta de Incidente de Segurança:</strong> Encarregado pelo Tratamento de Dados Pessoais (DPO) - <a href="https://www.ufrgs.br/tri/guias-2/" target="_blank" style="color: #0a58ca; margin-left: 10px;">Acesse o Guia TRI</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu Hamburguer para PDF -->
+    <div class="pdf-menu">
+        <button class="pdf-toggle" onclick="togglePDFMenu()">
+            <i class="fas fa-file-pdf"></i>
+        </button>
+        <div class="pdf-dropdown" id="pdfDropdown">
+            <a href="#" class="pdf-item" onclick="downloadPDF('fase1')">
+                <i class="fas fa-download"></i> 1. Preparação
+            </a>
+            <a href="#" class="pdf-item" onclick="downloadPDF('fase2')">
+                <i class="fas fa-download"></i> 2. Detecção
+            </a>
+            <a href="#" class="pdf-item" onclick="downloadPDF('fase3')">
+                <i class="fas fa-download"></i> 3. Análise
+            </a>
+            <a href="#" class="pdf-item" onclick="downloadPDF('fase4')">
+                <i class="fas fa-download"></i> 4. Contenção
+            </a>
+            <a href="#" class="pdf-item" onclick="downloadPDF('fase5')">
+                <i class="fas fa-download"></i> 5. Erradicação
+            </a>
+            <a href="#" class="pdf-item" onclick="downloadPDF('fase6')">
+                <i class="fas fa-download"></i> 6. Recuperação
+            </a>
+            <a href="#" class="pdf-item" onclick="downloadPDF('fase7')">
+                <i class="fas fa-download"></i> 7. Pós-Incidente
+            </a>
+            <a href="#" class="pdf-item" onclick="downloadPDF('completo')">
+                <i class="fas fa-file-pdf"></i> Playbook Completo
+            </a>
+            <a href="#" class="pdf-item" onclick="downloadPDF('anexos')">
+                <i class="fas fa-paperclip"></i> Anexos (Checklists)
+            </a>
+        </div>
     </div>
 
     <div class="viewport">
-        <div class="header-title">
-            <h1>COMPROMETIMENTO DE INFORMAÇÕES</h1>
-            <p>Baseado em NIST SP 800-61 Rev3.</p>
-        </div>
-
+        <h1 style="text-align: center; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">
+            <i class="fas fa-database" style="margin-right: 15px;"></i> 
+             TRATAMENTO DE INCIDENTE DE SEGURANÇA
+        </h1>
+        <p style="text-align: center; margin-top: -10px; font-size: 1.2em; opacity: 0.9;">
+            Vazamento de Informações 
+        </p>
+        
+        <!-- PÁGINA PRINCIPAL -->
         <div id="principal" class="content-card active">
-            <h2 style="text-align: center;">FLUXOGRAMA DE DECISÃO</h2>
-            <div class="img-container"><img src="fluxogramageral.jpg"></div>
-            <div class="info-section">
-                <h3></h3>
-                <p>Selecione uma das fases abaixo na barra de navegação para ver as instruções detalhadas.</p>
+            <div class="phase-title">
+                <h2 style="color: var(--dark-blue)">Visão Geral - Vazamento de Informações</h2>
+                <span class="badge badge-critical">RISCO EXTERNO - TECNOLÓGICO</span>
             </div>
-        </div>
-
-        <div id="fase_det" class="content-card">
-            <h2 style="color: #FF8000">DETECÇÃO</h2>
-            <div class="img-container"><img src="deteccao.jpg"></div>
             
-            <div class="info-section">
-                <h3>Ferramentas de Detecção</h3>
-                <div class="mitigation-tools">
-                    <span class="tool-badge">SIEM (Splunk/QRadar)</span>
-                    <span class="tool-badge">DLP (Symantec/Forcepoint)</span>
-                    <span class="tool-badge">IDS/IPS</span>
-                    <span class="tool-badge">UEBA (Análise de Comportamento)</span>
-                </div>
+            <div class="img-container">
+                <i class="fas fa-exclamation-triangle" style="font-size: 60px; color: var(--dark-red); margin-bottom: 15px;"></i>
+                <h3 style="color: var(--dark-red); margin: 10px 0;">Crise de Segurança de Alto Impacto</h3>
+                <p style="font-size: 1.1em;">Dados sensíveis, sigilosos ou pessoais acessados, extraídos ou expostos a indivíduos não autorizados</p>
             </div>
-
-            <button class="btn-details" onclick="toggleDetails('det_text')">ORIENTAÇÕES DA DETECÇÃO ↓</button>
-            <div id="det_text" class="extra-info">
-                <div class="info-section">
-                    <h3>Identificação do Incidente</h3>
-                    <h4>O objetivo é confirmar a ocorrência e coletar os primeiros sinais de comprometimento (IoCs)</h4>
-                    <dl class="steps-guide">
-                        <dt>Sinais de Alerta</dt>
-                        <dd>Verificar se o alerta partiu do SIEM (Exfiltração), EDR (Acesso anômalo) ou reporte direto de usuário. Validar se não se trata de um falso positivo.</dd>
-                        <dt>Coleta de Evidências Voláteis</dt>
-                        <dd>Antes de qualquer alteração no sistema, capturar logs de tráfego de rede e hashes de arquivos suspeitos para garantir a integridade da prova</dd>
-                        <dt>Validação</dt>
-                        <dd>Correlacionar alertas de DLP com logs de acesso ao banco de dados ou sistemas de arquivos.</dd>
-                    </dl>
-                </div>
-            </div>
-        </div>
-
-        <div id="fase_ana" class="content-card">
-            <h2 style="color: #FF8000">ANÁLISE</h2>
-            <div class="img-container"><img src="analise.jpg"></div>
             
-            <div class="info-section">
-                <h3>Ferramentas de Análise</h3>
-                <div class="mitigation-tools">
-                    <span class="tool-badge">Wireshark (PCAP)</span>
-                    <span class="tool-badge">Forensics Tools (FTK/EnCase)</span>
-                    <span class="tool-badge">Log Aggregators</span>
+            <div style="background-color: #f0f8ff; padding: 25px; border-radius: 8px; margin-top: 20px; border-left: 5px solid var(--dark-blue);">
+                <h3 style="color: var(--dark-blue); margin-top: 0;">Contexto da UFRGS</h3>
+                <p>No ecossistema digital da UFRGS, a <strong>informação é o ativo mais valioso</strong>. Conforme o Catálogo de Serviços do CPD, os dados circulam de forma integrada entre sistemas estratégicos. Um vazamento na Universidade não é apenas um incidente técnico; é um evento que pode expor a privacidade de milhares de alunos, docentes e servidores, além de comprometer anos de investimento em ciência e tecnologia.</p>
+                <p>Diferente de um incidente de malware isolado, o <strong>vazamento de informações na UFRGS possui um caráter transversal</strong>, onde a exposição de um banco de dados pode ecoar em múltiplas esferas — da administrativa à acadêmica — violando a confiança da comunidade e a soberania do conhecimento produzido.</p>
+            </div>
+            
+            <div class="grid-container">
+                <div class="grid-item" style="border-left: 4px solid var(--red);">
+                    <h4 style="color: var(--red);"><i class="fas fa-file-signature"></i> Sistemas de Gestão</h4>
+                    <p><strong>SEI e Portal de Serviços:</strong> Vazamento expõe processos sigilosos, folha de pagamento, contratos e assinaturas digitais</p>
+                    <span class="badge badge-critical">CRÍTICO</span>
+                </div>
+                
+                <div class="grid-item" style="border-left: 4px solid var(--orange);">
+                    <h4 style="color: var(--orange);"><i class="fas fa-graduation-cap"></i> Ensino e Aprendizagem</h4>
+                    <p><strong>Moodle e Mconf:</strong> Dados pessoais de estudantes, histórico escolar, avaliações e direitos autorais</p>
+                    <span class="badge badge-high">ALTO</span>
+                </div>
+                
+                <div class="grid-item" style="border-left: 4px solid var(--purple);">
+                    <h4 style="color: var(--purple);"><i class="fas fa-flask"></i> Informação e Conhecimento</h4>
+                    <p><strong>Lume e Periódicos:</strong> Propriedade intelectual, patentes, pesquisas clínicas e sociais sensíveis</p>
+                    <span class="badge badge-critical">CRÍTICO</span>
+                </div>
+                
+                <div class="grid-item" style="border-left: 4px solid var(--info-blue);">
+                    <h4 style="color: var(--info-blue);"><i class="fas fa-wifi"></i> Infraestrutura de Base</h4>
+                    <p><strong>Eduroam, VPN:</strong> Pontos de fuga para exfiltração silenciosa de propriedade intelectual</p>
+                    <span class="badge badge-medium">MÉDIO</span>
                 </div>
             </div>
-
-            <button class="btn-details" onclick="toggleDetails('ana_text')">ORIENTAÇÕES DA ANÁLISE ↓</button>
-            <div id="ana_text" class="extra-info">
-                <div class="info-section">
-                    <h3>Triagem e Escopo</h3>
-                    <dl class="steps-guide">
-                        <dt>Decisão LGPD <span class="badge bg-alto">Crítico</span></dt>
-                        <dt>Determinação do Vetor e Extensão</dt>
-                        <dd>Analisar como o atacante entrou (ex: Credencial roubada, SQL Injection) e quantos registros/arquivos foram acessados ou exportados.</dd>
-                        <dt>Impacto</dt>
-                        <dd>Determinar o volume de dados comprometidos e a criticidade para o negócio.</dd>
-                        <dt>Classificar os dados comprometidos.</dt>
-                        <dd>Se houver Dados Pessoais ou Sensíveis, o DPO deve ser notificado imediatamente para cumprir o prazo legal de 48h junto à ANPD</dd>
-                    </dl>
+            
+            <div class="info-box">
+                <h4 style="color: var(--info-blue); margin-top: 0;">🎯 Objetivos Estratégicos do Playbook</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div><strong>1. Detecção e Triagem:</strong> Identificação ágil de exfiltração</div>
+                    <div><strong>2. Contenção e Estancamento:</strong> Bloqueio de vetores de saída</div>
+                    <div><strong>3. Investigação Forense:</strong> Determinar dados expostos e impacto</div>
+                    <div><strong>4. Remediação e Notificação:</strong> LGPD e ANPD</div>
+                    <div><strong>5. Aprimoramento:</strong> Governança e classificação de dados</div>
                 </div>
+            </div>
+            
+            <div class="lgpd-box">
+                <h4 style="color: var(--lgpd-purple); margin-top: 0;"><i class="fas fa-gavel"></i> Conformidade Legal</h4>
+                <p>Este playbook assegura o cumprimento das obrigações de transparência, notificando os titulares dos dados e a ANPD (Autoridade Nacional de Proteção de Dados) conforme exigido pela <strong>Lei nº 13.709/2018 (LGPD)</strong>.</p>
+                <p style="margin-bottom: 0;"><strong>DPO/UFRGS:</strong> Responsável pela comunicação oficial do incidente.</p>
+            </div>
+            
+            <p style="text-align: center; font-size: 1.1em; margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px;">
+                <i class="fas fa-arrow-down" style="color: var(--red);"></i> Selecione uma fase abaixo para acessar os procedimentos detalhados <i class="fas fa-arrow-down" style="color: var(--red);"></i>
+            </p>
+        </div>
+
+        <!-- FASE 1: PREPARAÇÃO -->
+        <div id="fase1" class="content-card">
+            <div class="phase-title">
+                <h2 style="color: var(--green)">Fase 1: Preparação</h2>
+                <span class="badge" style="background-color: var(--green);">Controles Proativos</span>
+            </div>
+            <p>A fase de preparação para o comprometimento de informações visa estabelecer <strong>controles rigorosos sobre a custódia dos dados</strong>. O foco é garantir que a instituição conheça a localização, a sensibilidade e o fluxo das informações, permitindo que qualquer desvio de integridade ou confidencialidade seja mitigado antes que resulte em sanções da LGPD ou danos reputacionais graves.</p>
+            
+            <button class="btn-details" onclick="toggleDetails('d1')">
+                <i class="fas fa-cogs"></i> VER PROCEDIMENTOS COMPLETOS
+            </button>
+            <div id="d1" class="extra-info">
+                <h3>📋 INVENTÁRIO DE DADOS CRÍTICOS</h3>
+                <p>Mapear onde residem as informações sensíveis e quem possui acesso a elas.</p>
+                <ul>
+                    <li><strong>Classificação de dados:</strong> Público, Interno, Confidencial, Restrito (LGPD)</li>
+                    <li><strong>Mapeamento de fluxos:</strong> Como os dados trafegam entre sistemas</li>
+                    <li><strong>Titulares:</strong> Alunos, servidores, pesquisadores, terceiros</li>
+                    <li><strong>Períodos de retenção:</strong> Políticas de backup e descarte</li>
+                </ul>
+                
+                <h3>🛡️ DLP (DATA LOSS PREVENTION)</h3>
+                <p>Configuração de regras para detectar movimentação anômala de volumes de dados.</p>
+                <table class="tabela-evidencias">
+                    <thead>
+                        <tr>
+                            <th>TIPO DE REGRA</th>
+                            <th>DESCRIÇÃO</th>
+                            <th>EXEMPLO</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Volume de saída</td>
+                            <td>Alertar quando tráfego de upload exceder baseline</td>
+                            <td>Servidor enviando >100MB/h para IP externo</td>
+                        </tr>
+                        <tr>
+                            <td>Padrões de dados</td>
+                            <td>Identificar CPF, cartão de crédito, dados sigilosos</td>
+                            <td>Planilha com CPFs enviada por e-mail</td>
+                        </tr>
+                        <tr>
+                            <td>APIs sensíveis</td>
+                            <td>Monitorar chamadas a endpoints com dados pessoais</td>
+                            <td>Extração massiva via API do SEI</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3>💾 BACKUPS IMUTÁVEIS E CRIPTOGRAFADOS</h3>
+                <p>Proteger backups contra leitura não autorizada e deleção por atacantes.</p>
+                <ul>
+                    <li><strong>Imutabilidade:</strong> Backups que não podem ser alterados ou deletados durante o período de retenção</li>
+                    <li><strong>Criptografia:</strong> Dados criptografados em repouso e em trânsito</li>
+                    <li><strong>Estratégia 3-2-1:</strong> 3 cópias, 2 mídias diferentes, 1 off-site</li>
+                    <li><strong>Testes periódicos:</strong> Restauração validada trimestralmente</li>
+                </ul>
+                
+                <h3>🔐 MFA E ZERO TRUST</h3>
+                <p>Garantir que 100% dos acessos administrativos e repositórios de dados exijam Múltiplo Fator de Autenticação.</p>
+                <div style="background-color: #e8f5e9; padding: 15px; border-radius: 5px; margin: 15px 0;">
+                    <strong>Implementação prioritária:</strong>
+                    <ul>
+                        <li>Acessos SSH e RDP administrativos</li>
+                        <li>Consoles de banco de dados</li>
+                        <li>Ferramentas de administração em nuvem</li>
+                        <li>Acesso a sistemas com dados sensíveis (SEI, Moodle)</li>
+                    </ul>
+                </div>
+                
+                <h3>🔧 HARDENING DE SISTEMAS</h3>
+                <p>Aplicação de configurações de segurança rigorosas seguindo benchmarks CIS e políticas internas.</p>
+                <ul>
+                    <li><strong>Remoção de serviços desnecessários:</strong> Redução da superfície de ataque</li>
+                    <li><strong>Princípio do menor privilégio:</strong> Acessos mínimos necessários</li>
+                    <li><strong>Segmentação de rede:</strong> VLANs para isolar dados críticos</li>
+                    <li><strong>Proibição de Shadow IT:</strong> Bloqueio de nuvens pessoais para dados institucionais</li>
+                </ul>
             </div>
         </div>
 
+        <!-- FASE 2: DETECÇÃO -->
+        <div id="fase2" class="content-card">
+            <div class="phase-title">
+                <h2 style="color: var(--orange)">Fase 2: Detecção</h2>
+                <span class="badge" style="background-color: var(--orange);">Indicadores de Exfiltração (IoEs)</span>
+            </div>
+            <p>Visa identificar <strong>indicadores de exfiltração (IoEs)</strong> e atividades que sugiram que o sigilo dos dados foi rompido.</p>
+            
+            <button class="btn-details" onclick="toggleDetails('d2')">
+                <i class="fas fa-search"></i> VER SINAIS DE ALERTA E PROCESSOS
+            </button>
+            <div id="d2" class="extra-info">
+                <h3>🚨 PRINCIPAIS SINAIS DE ALERTA</h3>
+                
+                <table class="tabela-evidencias">
+                    <thead>
+                        <tr>
+                            <th>SINAL DE ALERTA</th>
+                            <th>DESCRIÇÃO</th>
+                            <th>EXEMPLO NA UFRGS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Exfiltração de Volume</strong></td>
+                            <td>Alto tráfego de saída (Upload) via portas não convencionais</td>
+                            <td>Servidor do Moodle enviando 50GB às 03:00 para IP na Rússia</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Acesso Incoerente</strong></td>
+                            <td>Sucesso de login em bancos de dados em horários atípicos ou via IPs internacionais</td>
+                            <td>Login no SEI às 02:30 de IP chinês</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Alteração de Auditoria</strong></td>
+                            <td>Limpeza de logs de acesso ou desativação de ferramentas de segurança</td>
+                            <td>Logs de acesso do banco de dados zerados sem justificativa</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Shadow IT Ativo</strong></td>
+                            <td>Servidores estabelecendo conexões com serviços de nuvem pública não homologados</td>
+                            <td>Servidor de pesquisa enviando dados para Dropbox pessoal</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Queries Anômalas</strong></td>
+                            <td>Consultas SQL que retornam grandes volumes (SELECT * FROM alunos)</td>
+                            <td>Extração completa da base de alunos do Moodle</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3>⚖️ PROCESSO DE TOMADA DE DECISÃO</h3>
+                
+                <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                    <h4>Confirmação do Incidente</h4>
+                    <p>O incidente é confirmado quando a <strong>análise cruzada</strong> (Logs de Banco + Tráfego de Rede + EDR) indica saída de dados sem justificativa.</p>
+                </div>
+                
+                <div style="background-color: #fff3cd; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #ffc107;">
+                    <h4>Dúvida ou Incerteza</h4>
+                    <p>Se não houver evidência clara de que a informação foi de fato "lida" ou "extraída", deve-se reforçar o monitoramento sobre os ativos envolvidos e realizar uma análise forense preliminar.</p>
+                    <p><strong>Observação Ativa:</strong> Em vez de cortar o acesso, a equipe monitora o destino dos dados. Isso é vital para identificar o servidor de Comando e Controle (C2) do atacante.</p>
+                </div>
+                
+                <h3>📊 FERRAMENTAS DE DETECÇÃO</h3>
+                <ul>
+                    <li><strong>SIEM:</strong> Correlação de eventos e alertas de volumetria anômala</li>
+                    <li><strong>DLP:</strong> Identificação de padrões de dados sensíveis em movimento</li>
+                    <li><strong>EDR:</strong> Detecção de infostealers e processos de compressão suspeitos</li>
+                    <li><strong>NetFlow:</strong> Análise de tráfego e conexões incomuns</li>
+                    <li><strong>WAF:</strong> Bloqueio de tentativas de injeção SQL para extração</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- FASE 3: ANÁLISE -->
         <div id="fase3" class="content-card">
-            <h2 style="color: #FF3333"> CONTENÇÃO</h2>
-            <div class="img-container"><img src="contencao.jpg"></div>
-            
-            <div class="info-section">
-                <h3>Ferramentas de Contenção</h3>
-                <div class="mitigation-tools">
-                    <span class="tool-badge">EDR (CrowdStrike/SentinelOne)</span>
-                    <span class="tool-badge">Azure AD / Okta (Revogar Sessions)</span>
-                    <span class="tool-badge">Cisco Umbrella / Proxy</span>
-                </div>
+            <div class="phase-title">
+                <h2 style="color: var(--red)">Fase 3: Análise</h2>
+                <span class="badge" style="background-color: var(--red);">Investigação Forense</span>
             </div>
-
-            <button class="btn-details" onclick="toggleDetails('det3')">ORIENTAÇÕES TÉCNICAS ↓</button>
-            <div id="det3" class="extra-info">
-                <div class="info-section">
-                    <h3>Interrupção do Vazamento</h3>
-                    <p>O objetivo é "estancar o sangramento" da informação</p>
-                    <dl class="steps-guide">
-                        <dt>Ação Imediata:</dt>
-                        <dt>Ações de Contenção</dt>
-                        <dd>Bloquear IPs de destino, isolar o servidor comprometido ou revogar chaves de acesso que permitiram a extração.</dd>
-                        <dd>Isolar hosts comprometidos da rede via EDR para cessar a exfiltração.</dd>
-                        <dt>Bloqueio de Identidade</dt>
-                        <dd>Revogar Refresh Tokens e resetar senhas de contas envolvidas no comprometimento.</dd>
-                    </dl>
+            <p>Investigação minuciosa para determinar a <strong>profundidade do vazamento</strong> e quais dados foram expostos.</p>
+          
+            <button class="btn-details" onclick="toggleDetails('d3')">
+                <i class="fas fa-microscope"></i> VER PROCEDIMENTOS FORENSES
+            </button>
+            <div id="d3" class="extra-info">
+                <h3>🔍 COLETA DE EVIDÊNCIAS DE VAZAMENTO</h3>
+                
+                <table class="tabela-evidencias">
+                    <thead>
+                        <tr>
+                            <th width="25%">AÇÕES</th>
+                            <th width="75%">EVIDÊNCIAS PRIORITÁRIAS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Identificar Vetor de Entrada</strong></td>
+                            <td>
+                                Logs de acesso Web e logs de Auditoria do Banco de Dados
+                                <div class="destaque-tabela">
+                                    <strong>Exemplo:</strong> SQL Injection detectada no Moodle com extração de dados
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mapear Dados Acessados</strong></td>
+                            <td>
+                                Queries executadas no banco e registros de acesso a arquivos
+                                <div class="destaque-tabela">
+                                    <strong>Exemplo:</strong> SELECT * FROM alunos; SELECT * FROM folha_pagamento;
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Detectar Exfiltração</strong></td>
+                            <td>
+                                Logs de Firewall de borda e volumetria de Upload/NetFlow
+                                <div class="destaque-tabela">
+                                    <strong>Exemplo:</strong> 10GB enviados para 45.33.22.11 (servidor C2)
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Analisar Persistência</strong></td>
+                            <td>
+                                Verificação de Web Shells e novas chaves de API/Tokens
+                                <div class="destaque-tabela">
+                                    <strong>Exemplo:</strong> Shell.php oculto em /var/www/html/uploads/
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Preservar para LGPD</strong></td>
+                            <td>
+                                Imagem forense, dump de memória e logs de tráfego para relatório à ANPD
+                                <div class="destaque-tabela">
+                                    <strong>Exemplo:</strong> Preservação de evidências para cadeia de custódia
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3>🧪 TÉCNICAS AVANÇADAS DE ANÁLISE</h3>
+                
+                <div class="grid-container">
+                    <div class="grid-item">
+                        <h4><i class="fas fa-memory"></i> Live Forensics (Memória)</h4>
+                        <p>Essencial para identificar malwares que não deixam rastros no disco (fileless) e que estão injetados em processos legítimos do servidor para exfiltrar dados silenciosamente.</p>
+                        <ul>
+                            <li><strong>Ferramentas:</strong> Volatility, Rekall, LiME</li>
+                            <li><strong>Foco:</strong> Processos ocultos, conexões C2</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="grid-item">
+                        <h4><i class="fas fa-clock"></i> Timeline do Sistema</h4>
+                        <p>Reconstruir o passo a passo do invasor ajuda a identificar quais pastas de pesquisa ou diretórios administrativos foram abertos e copiados.</p>
+                        <ul>
+                            <li><strong>Ferramentas:</strong> Sleuth Kit, Autopsy</li>
+                            <li><strong>Foco:</strong> MAC times (Modified, Accessed, Changed)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="grid-item">
+                        <h4><i class="fas fa-network-wired"></i> Movimentação Lateral</h4>
+                        <p>Verificar se o atacante, após vazar dados de um servidor web, utilizou protocolos como SMB ou RDP para "saltar" para o banco de dados central.</p>
+                        <ul>
+                            <li><strong>Foco:</strong> Conexões internas não autorizadas</li>
+                            <li><strong>Risco:</strong> Comprometimento do AD/LDAP</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <h3>🎯 MAPEAMENTO MITRE ATT&CK</h3>
+                <table class="tabela-evidencias">
+                    <thead>
+                        <tr>
+                            <th>TÁTICA</th>
+                            <th>TÉCNICA</th>
+                            <th>DESCRIÇÃO</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>TA0010</strong></td>
+                            <td>Exfiltração</td>
+                            <td>Exfiltration Over C2 Channel, Transfer Size Limits</td>
+                        </tr>
+                        <tr>
+                            <td><strong>TA0011</strong></td>
+                            <td>Comando e Controle</td>
+                            <td>Encrypted Channel, Non-Standard Port</td>
+                        </tr>
+                        <tr>
+                            <td><strong>TA0008</strong></td>
+                            <td>Evasão de Defesa</td>
+                            <td>Indicator Removal, Disable DLP Tools</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="warning-box">
+                    <h4 style="margin-top: 0;">⏱️ Tempo de Permanência (Dwell Time)</h4>
+                    <p>O tempo de permanência do atacante no sistema deve ser calculado para avaliar a extensão total do dano e o volume de dados vazados.</p>
+                    <p><strong>Média em ataques de exfiltração:</strong> 24 a 72 horas antes da detecção</p>
+                    <p><strong>Meta da UFRGS:</strong> Reduzir MTTD (Mean Time to Detect) para < 2 horas</p>
                 </div>
             </div>
         </div>
 
-        <div id="fase3b" class="content-card">
-            <h2 style="color: var(--nist-eradicate)"> ERRADICAÇÃO</h2>
-            <div class="img-container"><img src="erradicacao.jpg"></div>
-
-            <div class="info-section">
-                <h3>Ferramentas de Erradicação</h3>
-                <div class="mitigation-tools">
-                    <span class="tool-badge">Antivírus/Next-Gen AV</span>
-                    <span class="tool-badge">Vulnerability Scanners (Nessus)</span>
-                    <span class="tool-badge">Configuration Management</span>
-                </div>
-            </div>
-
-            <button class="btn-details" onclick="toggleDetails('det3b')">ORIENTAÇÕES TÉCNICAS ↓</button>
-            <div id="det3b" class="extra-info">
-                <div class="info-section">
-                    <h3>Remediação </h3>
-                    <dl class="steps-guide">
-                        <dt>Remoção de Malwares</dt>
-                        <dd>Executar varredura completa para eliminar webshells ou backdoors deixados pelo atacante.</dd>
-                        <dt>Remoção de Backdoors e Persistência</dt>
-                        <dd>Identificar e remover scripts maliciosos, tarefas agendadas ou contas de sistema criadas pelo atacante para garantir acesso futuro.</dd>
-                        <dt>Sanitização</dt>
-                        <dd>Aplicar patches de segurança ou desativar serviços vulneráveis que foram explorados (ex: fechar portas inseguras ou corrigir código vulnerável).</dd>
-                    </dl>
-                </div>
-            </div>
-        </div>
-
+        <!-- FASE 4: CONTENÇÃO -->
         <div id="fase4" class="content-card">
-            <h2 style="color: var(--nist-recover)">RECUPERAÇÃO</h2>
-            <div class="img-container"><img src="recuperacao.jpg"></div>
-
-            <div class="info-section">
-                <h3>Ferramentas de Recuperação</h3>
-                <div class="mitigation-tools">
-                    <span class="tool-badge">Veeam/Backup Systems</span>
-                    <span class="tool-badge">Change Management (ITIL)</span>
-                    <span class="tool-badge">Monitoring (Zabbix/Prometheus)</span>
-                </div>
+            <div class="phase-title">
+                <h2 style="color: #E0493E">Fase 4: Contenção</h2>
+                <span class="badge" style="background-color: #E0493E;">Estancar o Vazamento</span>
             </div>
-
-            <button class="btn-details" onclick="toggleDetails('det4')">ORIENTAÇÕES TÉCNICAS ↓</button>
-            <div id="det4" class="extra-info">
-                <div class="info-section">
-                    <h3>Conformidade e Retorno</h3>
-                    <dl class="steps-guide">
-                        <dt>Verificação de Integridade de Dados</dt>
-                        <dd>Auditar as bases de dados para garantir que não houve alteração maliciosa (ex: inserção de registros falsos ou alteração de privilégios).</dd>
-                        <dt>Restauração</dt>
-                        <dd>Restaurar dados a partir de backups íntegros e testados.</dd>
-                        <dt>Comunicação e Notificação Regulatória</dt>
-                        <dd>Formalizar as notificações para a ANPD e para os titulares dos dados, caso a análise de impacto tenha indicado risco aos direitos dos cidadãos.</dd>
-                    </dl>
+            <p>A gravidade do vazamento deve ser classificada com base na <strong>sensibilidade dos dados expostos</strong> e no nível de privilégio obtido pelo invasor. Caso o incidente seja classificado como <strong>CRÍTICO</strong> (ex: exfiltração de dados do SEI, Moodle ou folha de pagamento), as ações de contenção devem ser imediatas para interromper a fuga de informações.</p>
+            
+            <button class="btn-details" onclick="toggleDetails('d4')">
+                <i class="fas fa-shield-virus"></i> VER CLASSIFICAÇÃO E AÇÕES
+            </button>
+            <div id="d4" class="extra-info">
+                <h3>📊 CLASSIFICAÇÃO DE VAZAMENTO E RESPOSTA</h3>
+                
+                <table class="tabela-evidencias">
+                    <thead>
+                        <tr>
+                            <th width="40%">CRITÉRIOS</th>
+                            <th width="15%">TEMPO DE REAÇÃO</th>
+                            <th width="45%">AÇÕES IMEDIATAS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Exfiltração ativa de dados sensíveis ou acesso Root confirmado</strong></td>
+                            <td style="text-align: center; font-weight: bold; color: #d32f2f;">Imediato<br>(Minutos)</td>
+                            <td>
+                                Isolar o servidor da rede (Quarentena); suspender contas e rotas de saída.
+                                <div class="destaque-tabela">
+                                    Prioridade máxima: Estancar hemorragia de dados
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Web Shell detectada ou tentativa de escalonamento de privilégios</strong></td>
+                            <td style="text-align: center; font-weight: bold; color: #f57c00;">Até 30 Minutos</td>
+                            <td>
+                                Bloquear IPs externos atacantes no Firewall; reset de credenciais.
+                                <div class="destaque-tabela">
+                                    Impedir controle remoto e exfiltração
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Atividade de exfiltração em baixa velocidade ou Malware em /tmp</strong></td>
+                            <td style="text-align: center; font-weight: bold; color: #ffb300;">Até 2 Horas</td>
+                            <td>
+                                Encerrar processos maliciosos; isolar diretórios de escrita de dados.
+                                <div class="destaque-tabela">
+                                    Evitar vazamento silencioso contínuo
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tentativas de Brute Force constantes com logins suspeitos</strong></td>
+                            <td style="text-align: center; font-weight: bold; color: #388e3c;">Até 4 Horas</td>
+                            <td>
+                                Atualizar listas de bloqueio; fortalecer políticas de senha/MFA.
+                                <div class="destaque-tabela">
+                                    Prevenção de acesso não autorizado
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3>🚧 ESTRATÉGIAS DE ISOLAMENTO</h3>
+                
+                <div class="grid-container">
+                    <div class="grid-item" style="border-left: 4px solid #2196F3;">
+                        <h4>Isolamento Lógico</h4>
+                        <p>VLAN de Quarentena, ACLs de Firewall restritivas</p>
+                        <p><strong>Vantagem:</strong> Mantém servidor online para análise forense</p>
+                    </div>
+                    
+                    <div class="grid-item" style="border-left: 4px solid #FF9800;">
+                        <h4>Isolamento Físico</h4>
+                        <p>Desconexão de cabo, desativação de porta no switch</p>
+                        <p><strong>Vantagem:</strong> Contenção 100% eficaz imediata</p>
+                    </div>
+                    
+                    <div class="grid-item" style="border-left: 4px solid #9C27B0;">
+                        <h4>Isolamento de Aplicação</h4>
+                        <p>Parada apenas do serviço comprometido</p>
+                        <p><strong>Vantagem:</strong> Minimiza impacto nos negócios</p>
+                    </div>
+                </div>
+                
+                <div class="warning-box">
+                    <h4 style="margin-top: 0;">⚠️ IMPORTANTE: Preservação de Evidências</h4>
+                    <p>Durante a contenção, a equipe deve <strong>evitar alterações drásticas que possam impedir a coleta de logs forenses</strong>. Sempre que possível, colete evidências voláteis antes do isolamento completo.</p>
+                    <p><strong>Evidências voláteis:</strong> Memória RAM, conexões ativas, processos em execução.</p>
                 </div>
             </div>
         </div>
 
+        <!-- FASE 5: ERRADICAÇÃO -->
         <div id="fase5" class="content-card">
-            <h2 style="color: var(--nist-post)">PÓS-INCIDENTE</h2>
-            <div class="img-container"><img src="posincidente.jpg"></div>
-            <button class="btn-details" onclick="toggleDetails('det5')">ORIENTAÇÕES TÉCNICAS ↓</button>
-            <div id="det5" class="extra-info">
-                <div class="info-section">
-                    <h3>Melhoria Contínua</h3>
-                    <dl class="steps-guide">
-                        <dt>Relatórios</dt>
-                        <dd>Documentar a cronologia, causa raiz e ações tomadas no sistema oficial de incidentes.</dd>
-                        <dt>Atualização de Controles e Treinamento</dt>
-                        <dd>Ajustar regras do SIEM/IPS e promover treinamentos de conscientização com base no vetor real que causou o incidente.</dd>
-                        <dt>Lições Aprendidas</dt>
-                        <dd>Revisar políticas de DLP e controles de acesso para prevenir reincidência.</dd>
-                    </dl>
+            <div class="phase-title">
+                <h2 style="color: var(--blue)">Fase 5: Erradicação</h2>
+                <span class="badge" style="background-color: var(--blue);">Remoção Completa</span>
+            </div>
+            <p>Inicia-se a <strong>remoção completa de todos os artefatos maliciosos</strong>, contas ilegítimas e a correção das vulnerabilidades que permitiram a exfiltração de dados dos servidores da universidade.</p>
+            
+            <button class="btn-details" onclick="toggleDetails('d5')">
+                <i class="fas fa-broom"></i> VER PROCEDIMENTOS DE ERRADICAÇÃO
+            </button>
+            <div id="d5" class="extra-info">
+                <h3>🗑️ ELIMINAÇÃO DE PONTOS DE EXPOSIÇÃO ATIVA</h3>
+                
+                <table class="tabela-evidencias">
+                    <thead>
+                        <tr>
+                            <th width="25%">OBJETIVO DA AÇÃO</th>
+                            <th width="55%">PROCEDIMENTOS DA ERRADICAÇÃO</th>
+                            <th width="20%">RESPONSÁVEL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Remover Acesso do Invasor</strong></td>
+                            <td>Excluir Web Shells e encerrar conexões de exfiltração ativas (C2)</td>
+                            <td>Administradores de TI</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Retomar Soberania de Dados</strong></td>
+                            <td>Deletar usuários clandestinos e revogar chaves SSH/Tokens de API</td>
+                            <td>Segurança da Informação</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Fechar a Brecha de Segurança</strong></td>
+                            <td>Atualizar sistemas (Patching) e corrigir vulnerabilidades de código</td>
+                            <td>Gestor do Sistema</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sanear a Identidade</strong></td>
+                            <td>Resetar senhas e chaves de acesso de serviços e usuários afetados</td>
+                            <td>Identidade e Acesso</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Limpar a Rede Interna</strong></td>
+                            <td>Escanear servidores adjacentes em busca de rastros de dados exfiltrados</td>
+                            <td>Suporte Técnico</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3>🔧 CORREÇÃO DE VULNERABILIDADES E HARDENING</h3>
+                <ul>
+                    <li><strong>Sanear o Vetor de Entrada:</strong> Aplicar patches de segurança críticos (CVEs) em softwares que serviram de porta para o vazamento</li>
+                    <li><strong>Reset de Credenciais:</strong> Forçar a troca de senhas de todas as contas cujos dados foram acessados ou capturados</li>
+                    <li><strong>Reforço de Configuração:</strong> Revisar permissões de arquivos e base de dados, limitando acessos de leitura e escrita</li>
+                    <li><strong>Implementação de MFA:</strong> Garantir que a brecha não possa ser reutilizada</li>
+                </ul>
+                
+                <div class="info-box">
+                    <h4 style="margin-top: 0;">✅ VALIDAÇÃO PÓS-ERRADICAÇÃO</h4>
+                    <p>Confirmar a remoção de arquivos maliciosos, validar o reset de contas com MFA ativo e garantir, via logs, que o servidor não tenta mais conexões externas suspeitas.</p>
                 </div>
             </div>
         </div>
 
+        <!-- FASE 6: RECUPERAÇÃO -->
+        <div id="fase6" class="content-card">
+            <div class="phase-title">
+                <h2 style="color: var(--purple)">Fase 6: Recuperação</h2>
+                <span class="badge" style="background-color: var(--purple);">Restauração Segura</span>
+            </div>
+            <p>A recuperação foca em <strong>restabelecer a integridade dos dados</strong> e a disponibilidade dos sistemas, garantindo que o retorno ocorra de forma segura, impedindo que acessos remanescentes permitam novo vazamento.</p>
+            
+            <button class="btn-details" onclick="toggleDetails('d6')">
+                <i class="fas fa-sync-alt"></i> VER TESTES DE VALIDAÇÃO
+            </button>
+            <div id="d6" class="extra-info">
+                <h3>🧪 TESTES DE VALIDAÇÃO PÓS-VAZAMENTO</h3>
+                
+                <table class="tabela-evidencias">
+                    <thead>
+                        <tr>
+                            <th width="20%">TESTE</th>
+                            <th width="35%">OBJETIVO</th>
+                            <th width="35%">CRITÉRIO DE APROVAÇÃO</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Scan de Vulnerabilidade</strong></td>
+                            <td>Verificar se a falha que gerou o vazamento foi corrigida</td>
+                            <td>Relatório sem vulnerabilidades críticas</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Integridade de Dados</strong></td>
+                            <td>Confirmar que as bases de dados não foram corrompidas no ataque</td>
+                            <td>Hashes e volumetria coincidem com o original</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Auditoria de Acessos</strong></td>
+                            <td>Validar que apenas usuários legítimos acessam dados sensíveis</td>
+                            <td>100% dos usuários autorizados pelo CPD</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Teste de Exfiltração</strong></td>
+                            <td>Simular a técnica do invasor para testar a nova defesa (DLP/WAF)</td>
+                            <td>Tentativa de extração bloqueada pelo sistema</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Validação de MFA</strong></td>
+                            <td>Garantir que o segundo fator é obrigatório para todos os acessos</td>
+                            <td>Acesso negado sem o token de verificação</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Análise de Conexões Outbound</strong></td>
+                            <td>Monitorar se o servidor tenta enviar dados para o exterior</td>
+                            <td>Ausência de conexões externas não catalogadas</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3>🔄 RESTAURAÇÃO DE CONTROLES</h3>
+                <ul>
+                    <li><strong>Sanitização de Backups:</strong> Restaurar sistemas a partir de backups limpos, realizando varredura imediata pós-restauro</li>
+                    <li><strong>Reconfiguração de Acessos:</strong> Refinar regras de Firewall/WAF baseadas nos padrões observados no vazamento</li>
+                    <li><strong>Alertas de Integridade:</strong> Ativar monitoramento de arquivos (FIM) para detectar alterações em arquivos sensíveis</li>
+                    <li><strong>Criptografia:</strong> Implementar criptografia para dados em repouso e em trânsito</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- FASE 7: PÓS-INCIDENTE -->
+        <div id="fase7" class="content-card">
+            <div class="phase-title">
+                <h2 style="color: var(--info-blue)">Fase 7: Pós-Incidente</h2>
+                <span class="badge" style="background-color: var(--info-blue);">Lições Aprendidas</span>
+            </div>
+            <p>A análise pós-incidente foca em <strong>compreender a dinâmica da exfiltração</strong> para fortalecer a infraestrutura da UFRGS. É necessário identificar por que ferramentas como o DLP não detectaram a saída dos dados e como o atacante escalou privilégios.</p>
+           
+            <button class="btn-details" onclick="toggleDetails('d7')">
+                <i class="fas fa-chart-line"></i> VER ANÁLISE E MELHORIAS
+            </button>
+            <div id="d7" class="extra-info">
+                <h3>📝 DOCUMENTAÇÃO DO INCIDENTE</h3>
+                <p>Registrar a linha do tempo desde o primeiro indicador até a revogação total de acessos.</p>
+                
+                <table class="tabela-evidencias">
+                    <thead>
+                        <tr>
+                            <th>DATA/HORA</th>
+                            <th>EVENTO</th>
+                            <th>AÇÃO</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>DD/MM HH:MM</td>
+                            <td>Detecção inicial (alerta de exfiltração)</td>
+                            <td>Triagem e análise preliminar</td>
+                        </tr>
+                        <tr>
+                            <td>DD/MM HH:MM</td>
+                            <td>Confirmação do vazamento</td>
+                            <td>Acionamento do TRI e DPO</td>
+                        </tr>
+                        <tr>
+                            <td>DD/MM HH:MM</td>
+                            <td>Contenção aplicada</td>
+                            <td>Isolamento do servidor</td>
+                        </tr>
+                        <tr>
+                            <td>DD/MM HH:MM</td>
+                            <td>Erradicação concluída</td>
+                            <td>Remoção de backdoors</td>
+                        </tr>
+                        <tr>
+                            <td>DD/MM HH:MM</td>
+                            <td>Recuperação finalizada</td>
+                            <td>Sistema restaurado</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3>🔍 IDENTIFICAR MELHORIAS</h3>
+                <div class="grid-container">
+                    <div class="grid-item">
+                        <h4>Falhas de Detecção</h4>
+                        <ul>
+                            <li>DLP não configurado para volume de saída?</li>
+                            <li>Thresholds de alerta muito altos?</li>
+                            <li>Logs não centralizados?</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="grid-item">
+                        <h4>Falhas de Prevenção</h4>
+                        <ul>
+                            <li>Segmentação de rede falhou?</li>
+                            <li>MFA não implementado?</li>
+                            <li>Patches críticos pendentes?</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="grid-item">
+                        <h4>Falhas de Resposta</h4>
+                        <ul>
+                            <li>Tempo de detecção aceitável?</li>
+                            <li>Comunicação com DPO ágil?</li>
+                            <li>Playbook seguido corretamente?</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <h3>🔄 ATUALIZAR PROCESSOS</h3>
+                <ul>
+                    <li>Revisar a gestão de patches e os critérios de alertas para capturar técnicas similares no futuro</li>
+                    <li>Fortalecer políticas de classificação de dados e controles de acesso (IAM)</li>
+                    <li>Incorporar lições aprendidas nos treinamentos da equipe</li>
+                    <li>Atualizar o playbook com novas táticas identificadas</li>
+                </ul>
+                
+                <div class="lgpd-box">
+                    <h4 style="margin-top: 0;">📋 CONFORMIDADE NORMATIVA</h4>
+                    <p>A adoção dos frameworks <strong>ISO/IEC 27001, 27701 (Privacidade) e NIST</strong> é estratégica para a UFRGS. O NIST SP 800-61r2 fornece o roteiro metodológico para evitar decisões improvisadas.</p>
+                    <p>Esta conformidade atua diretamente na mitigação de riscos jurídicos, alinhando a universidade aos requisitos da <strong>LGPD</strong>, preservando sua reputação institucional e garantindo o cumprimento das obrigações legais.</p>
+                </div>
+                
+                <div class="info-box">
+                    <h4 style="margin-top: 0;">🎯 OBJETIVO FINAL</h4>
+                    <p>Garantir que os dados e sistemas retornem a um estado seguro, que os controles sejam aprimorados e que a organização esteja mais resiliente e preparada para enfrentar futuros incidentes de comprometimento e vazamento de informações.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ANEXOS (Card oculto, acessível via PDF) -->
+        <div id="anexos" class="content-card">
+            <div class="phase-title">
+                <h2 style="color: var(--dark-blue)">ANEXOS DO PLAYBOOK</h2>
+                <span class="badge" style="background-color: var(--dark-blue);">Documentação Operacional</span>
+            </div>
+            
+            <h3>Anexo A – Checklist de Informações Comprometidas</h3>
+            <div style="background: #f9f9f9; padding: 20px; border-radius: 8px;">
+                <h4>Checklist Operacional para Resposta a Vazamento</h4>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><input type="checkbox"> 1. Detecção e Triagem - Confirmar exfiltração de dados</li>
+                    <li><input type="checkbox"> 2. Acionamento - Comunicar TRI e DPO</li>
+                    <li><input type="checkbox"> 3. Preservação - Coletar logs e evidências voláteis</li>
+                    <li><input type="checkbox"> 4. Análise - Identificar dados comprometidos</li>
+                    <li><input type="checkbox"> 5. Contenção - Isolar servidor e bloquear exfiltração</li>
+                    <li><input type="checkbox"> 6. Erradicação - Remover backdoors e corrigir falhas</li>
+                    <li><input type="checkbox"> 7. Recuperação - Restaurar de backup limpo</li>
+                    <li><input type="checkbox"> 8. Notificação - Comunicar ANPD e titulares (LGPD)</li>
+                    <li><input type="checkbox"> 9. Documentação - Registrar lições aprendidas</li>
+                    <li><input type="checkbox"> 10. Melhoria - Atualizar controles e políticas</li>
+                </ul>
+            </div>
+            
+            <h3>Anexo B – Classificação por Tipos de Ataques</h3>
+            <table class="tabela-evidencias">
+                <thead>
+                    <tr>
+                        <th>TIPO DE ATAQUE</th>
+                        <th>EXEMPLO</th>
+                        <th>SEVERIDADE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Acesso Ativo e Persistente</td>
+                        <td>Infostealer, chaves de API vazadas</td>
+                        <td><span class="badge badge-critical">CRÍTICO</span></td>
+                    </tr>
+                    <tr>
+                        <td>Exposição e Má Configuração</td>
+                        <td>Buckets públicos, repositórios expostos</td>
+                        <td><span class="badge badge-high">ALTO</span></td>
+                    </tr>
+                    <tr>
+                        <td>Evasão e Manipulação</td>
+                        <td>Contorno de DLP/WAF, phishing direcionado</td>
+                        <td><span class="badge badge-high">ALTO</span></td>
+                    </tr>
+                    <tr>
+                        <td>Movimentação e Uso Indevido</td>
+                        <td>Movimentação lateral, permissões excessivas</td>
+                        <td><span class="badge badge-medium">MÉDIO</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3>Anexo C – Formulário Operacional</h3>
+            <div style="background: #f0f0f0; padding: 20px; border-radius: 8px;">
+                <p><strong>ID do Incidente:</strong> _________________________</p>
+                <p><strong>Data da Detecção:</strong> _________________________</p>
+                <p><strong>Sistema Afetado:</strong> _________________________</p>
+                <p><strong>Tipo de Dados Vazados:</strong> _________________________</p>
+                <p><strong>Volume Estimado:</strong> _________________________</p>
+                <p><strong>Vetor de Exfiltração:</strong> _________________________</p>
+                <p><strong>Ações Tomadas:</strong> _________________________</p>
+                <p><strong>Responsável:</strong> _________________________</p>
+                <p><strong>Notificação ANPD:</strong> ( ) Sim ( ) Não</p>
+                <p><strong>Notificação Titulares:</strong> ( ) Sim ( ) Não</p>
+            </div>
+            
+            <h3>Anexo D – Referências e Frameworks</h3>
+            <ul>
+                <li><strong>NIST SP 800-61r2:</strong> Guia de Tratamento de Incidentes</li>
+                <li><strong>ISO/IEC 27001:</strong> Sistema de Gestão de Segurança da Informação</li>
+                <li><strong>ISO/IEC 27701:</strong> Extensão para Privacidade (LGPD)</li>
+                <li><strong>MITRE ATT&CK:</strong> Táticas TA0010 (Exfiltração) e TA0011 (C2)</li>
+                <li><strong>LGPD:</strong> Lei nº 13.709/2018</li>
+                <li><strong>CIS Controls:</strong> Controle 03 - Proteção de Dados</li>
+            </ul>
+        </div>
     </div>
 
+    <!-- Barra de Navegação das Fases -->
     <div class="nav-bar">
-        <button class="nav-btn c-deteccao" onclick="showPhase('fase_det')">DETECÇÃO</button>
-        <button class="nav-btn c-analise" onclick="showPhase('fase_ana')">ANÁLISE</button>
-        <button class="nav-btn c-contencao" onclick="showPhase('fase3')">CONTENÇÃO</button>
-        <button class="nav-btn c-erradicacao" onclick="showPhase('fase3b')">ERRADICAÇÃO</button>
-        <button class="nav-btn c-recuperacao" onclick="showPhase('fase4')">RECUPERAÇÃO</button>
-        <button class="nav-btn c-pos" onclick="showPhase('fase5')">PÓS-INCIDENTE</button>
+        <button class="nav-btn c1" onclick="showPhase('fase1')"><i class="fas fa-tools"></i> Preparação</button>
+        <button class="nav-btn c2" onclick="showPhase('fase2')"><i class="fas fa-search"></i> Detecção</button>
+        <button class="nav-btn c3" onclick="showPhase('fase3')"><i class="fas fa-microscope"></i> Análise</button>
+        <button class="nav-btn c4" onclick="showPhase('fase4')"><i class="fas fa-shield-virus"></i> Contenção</button>
+        <button class="nav-btn c5" onclick="showPhase('fase5')"><i class="fas fa-broom"></i> Erradicação</button>
+        <button class="nav-btn c6" onclick="showPhase('fase6')"><i class="fas fa-sync-alt"></i> Recuperação</button>
+        <button class="nav-btn c7" onclick="showPhase('fase7')"><i class="fas fa-chart-line"></i> Pós-Incidente</button>
     </div>
 
     <script>
+        // Controle de fase atual
+        let currentPhase = 'principal';
+
         function showPhase(id) {
             document.querySelectorAll('.content-card').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.extra-info').forEach(i => i.style.display = 'none');
             document.getElementById(id).classList.add('active');
+            
+            const backBtn = document.getElementById('backButton');
+            if (id !== 'principal') {
+                backBtn.classList.add('show');
+                currentPhase = id;
+            } else {
+                backBtn.classList.remove('show');
+            }
+            
+            closePDFMenu();
+            document.querySelector('.viewport').scrollTop = 0;
         }
+
+        function showPrincipal() {
+            showPhase('principal');
+        }
+
         function toggleDetails(id) {
             const el = document.getElementById(id);
             el.style.display = (el.style.display === 'block') ? 'none' : 'block';
-            if(el.style.display === 'block') el.scrollIntoView({ behavior: 'smooth' });
         }
-        function toggleMenu() {
-            const m = document.getElementById("sideMenu");
-            m.style.width = (m.style.width === "280px") ? "0" : "280px";
+
+        // Modal LGPD
+        function toggleLGPD() {
+            const modal = document.getElementById("lgpdModal");
+            modal.style.display = (modal.style.display === "flex") ? "none" : "flex";
         }
+
+        // Menu PDF
+        function togglePDFMenu() {
+            document.getElementById("pdfDropdown").classList.toggle("show");
+        }
+
+        function closePDFMenu() {
+            document.getElementById("pdfDropdown").classList.remove("show");
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.pdf-toggle') && !event.target.closest('.pdf-toggle')) {
+                closePDFMenu();
+            }
+        }
+
+        // Função de download PDF (simplificada - mesma lógica do original)
+        function downloadPDF(fase) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const faseNomes = {
+                'fase1': '1_Preparacao',
+                'fase2': '2_Detecao',
+                'fase3': '3_Analise',
+                'fase4': '4_Contencao',
+                'fase5': '5_Erradicacao',
+                'fase6': '6_Recuperacao',
+                'fase7': '7_Pos_Incidente',
+                'completo': 'Playbook_Completo',
+                'anexos': 'Anexos'
+            };
+            
+            const nomeFase = faseNomes[fase] || fase;
+            
+            doc.setFontSize(18);
+            doc.setTextColor(0, 0, 128);
+            doc.text('UFRGS - Vazamento de Informações', 20, 20);
+            doc.setFontSize(14);
+            doc.text(`Fase: ${nomeFase.replace(/_/g, ' ')}`, 20, 35);
+            doc.setFontSize(10);
+            doc.setTextColor(100, 100, 100);
+            doc.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')}`, 20, 45);
+            doc.text('Centro de Processamento de Dados (CPD) - Time de Resposta a Incidentes (TRI)', 20, 52);
+            
+            doc.save(`Vazamento_Informacoes_${nomeFase}_UFRGS.pdf`);
+            closePDFMenu();
+            
+            alert(`PDF da fase ${nomeFase.replace(/_/g, ' ')} gerado com sucesso!`);
+        }
+
+        // Carregar fase da URL se existir
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const fase = urlParams.get('fase');
+            if (fase && document.getElementById(fase)) {
+                showPhase(fase);
+            }
+        });
     </script>
 </body>
 </html>
